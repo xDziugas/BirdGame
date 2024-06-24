@@ -11,6 +11,7 @@
 -- Check for working CXX compiler: C:/Program Files/JetBrains/CLion 2024.1.4/bin/mingw/bin/g++.exe - skipped
 -- Detecting CXX compile features
 -- Detecting CXX compile features - done
--- Configuring done (1.9s)
+-- Found SFML 2.6.1 in C:/SFML/SFML-2.6.1/lib/cmake/SFML
+-- Configuring done (1.4s)
 -- Generating done (0.0s)
 -- Build files have been written to: C:/Dziugo RTX I7/Programming Projects/C++/BirdGame/cmake-build-debug
