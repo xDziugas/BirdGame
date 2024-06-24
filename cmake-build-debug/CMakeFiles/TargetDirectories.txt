@@ -1,0 +1,3 @@
+C:/Dziugo RTX I7/Programming Projects/C++/BirdGame/cmake-build-debug/CMakeFiles/BirdGame.dir
+C:/Dziugo RTX I7/Programming Projects/C++/BirdGame/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/Dziugo RTX I7/Programming Projects/C++/BirdGame/cmake-build-debug/CMakeFiles/rebuild_cache.dir
