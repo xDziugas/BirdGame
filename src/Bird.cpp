@@ -21,8 +21,10 @@ void Bird::init(const std::string& texture_file) {
 }
 
 void Bird::update(float dt) {
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
+    jump_cooldown_timer -= dt;
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && jump_cooldown_timer <= 0.0f) {
         velocity = jump_strength;
+        jump_cooldown_timer = jump_cooldown;
     }
     velocity += gravity * dt;
     bird_sprite.move(0, velocity * dt);

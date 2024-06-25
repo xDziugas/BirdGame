@@ -19,6 +19,8 @@ private:
     float velocity;
     float gravity;
     float jump_strength;
+    float jump_cooldown;
+    float jump_cooldown_timer;
 
     void init(const std::string& texture_file);
 };

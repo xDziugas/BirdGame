@@ -12,5 +12,9 @@ find_package(SFML 2.6.1 COMPONENTS system window graphics network audio REQUIRED
 
 add_executable(BirdGame main.cpp
         src/Bird.cpp
-        include/Bird.h)
+        include/Bird.h
+        src/Background.cpp
+        include/Background.h
+        src/Ground.cpp
+        include/Ground.h)
 target_link_libraries(BirdGame sfml-audio sfml-graphics sfml-system sfml-window)
