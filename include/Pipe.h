@@ -11,7 +11,7 @@
 class Pipe {
 public:
     Pipe(float speed);
-    void spawnPipe(float x, float screenHeight);
+    void spawnPipe(float x, float screenHeight, float groundHeight);
     void update(float dt);
     void render(sf::RenderWindow& window);
     bool isOffScreen() const;

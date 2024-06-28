@@ -11,7 +11,6 @@ sf::Texture Pipe::pipe_texture;
 
 Pipe::Pipe(float speed) : speed(speed), gap(150.0f) {
     initSprites();
-    srand(static_cast<unsigned int>(time(0))); // Seed the random number generator
 }
 
 bool Pipe::loadTexture(const std::string& texture_file) {
@@ -28,12 +27,12 @@ void Pipe::initSprites() {
     pipe_bottom.setRotation(180); // Rotate bottom pipe
 }
 
-void Pipe::spawnPipe(float x, float screenHeight) {
+void Pipe::spawnPipe(float x, float screenHeight, float groundHeight) {
     float min_height = 0.3f * screenHeight;
-    float max_height = 0.7f * screenHeight - gap;
+    float max_height = 0.7f * screenHeight + gap - groundHeight;
 
     // Generate a random height for the top pipe within the specified bounds
-    float top_pipe_end = min_height + (rand() % static_cast<int>(max_height - min_height));
+    float top_pipe_end = min_height + rand() % static_cast<int>(max_height - min_height);
 
     // Set the position of the top pipe
     pipe_top.setPosition(x, top_pipe_end);

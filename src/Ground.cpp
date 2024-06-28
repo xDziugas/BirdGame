@@ -44,5 +44,5 @@ void Ground::render(sf::RenderWindow& window) {
 }
 
 float Ground::getGroundHeight() const {
-    return ground_sprite1.getPosition().y;
+    return ground_sprite1.getGlobalBounds().height;
 }

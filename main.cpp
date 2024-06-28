@@ -9,6 +9,9 @@
 #include "Pipe.h"
 
 int main() {
+
+    srand(static_cast<unsigned int>(time(nullptr))); // Seed the random number generator
+
     std::cout << "Current working directory: " << std::filesystem::current_path() << std::endl;
 
     if (!std::filesystem::exists("assets/default_bird.png")) {
@@ -42,13 +45,13 @@ int main() {
 
     std::vector<Pipe> pipes;
     pipes.emplace_back(200.0f);
-    pipes.back().spawnPipe(window.getSize().x, window.getSize().y);
+    pipes.back().spawnPipe(window.getSize().x, window.getSize().y, ground.getGroundHeight());
 
     sf::Clock clock;
     sf::Clock fpsClock;
     sf::Clock pipeSpawnClock;
     int frameCount = 0;
-    float pipeSpawnInterval = 3.0f;
+    float pipeSpawnInterval = 1.5f;
 
     bool isGameOver = false;
 
@@ -76,7 +79,7 @@ int main() {
             // Spawn new pipes at intervals
             if (pipeSpawnClock.getElapsedTime().asSeconds() >= pipeSpawnInterval) {
                 pipes.emplace_back(200.0f);
-                pipes.back().spawnPipe(window.getSize().x, window.getSize().y);
+                pipes.back().spawnPipe(window.getSize().x, window.getSize().y, ground.getGroundHeight());
                 pipeSpawnClock.restart();
             }
 
@@ -95,14 +98,14 @@ int main() {
             for (const auto& pipe : pipes) {
                 for (const auto& bounds : pipe.getBounds()) {
                     if (birdBounds.intersects(bounds)) {
-                        // isGameOver = true;
+                        isGameOver = true;
                     }
                 }
             }
 
             // Check for collision with the ground
-            if (birdBounds.top + birdBounds.height >= ground.getGroundHeight()) {
-                // isGameOver = true;
+            if (birdBounds.top + birdBounds.height >= window.getSize().y - ground.getGroundHeight()) {
+                isGameOver = true;
             }
 
             window.clear(sf::Color::Black);
