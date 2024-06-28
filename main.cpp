@@ -1,10 +1,12 @@
 #include <iostream>
 #include <SFML/Graphics.hpp>
 #include <filesystem>
+#include <vector>
 
 #include "Bird.h"
 #include "Background.h"
 #include "Ground.h"
+#include "Pipe.h"
 
 int main() {
     std::cout << "Current working directory: " << std::filesystem::current_path() << std::endl;
@@ -22,16 +24,33 @@ int main() {
         return EXIT_FAILURE;
     }
 
+    if (!std::filesystem::exists("assets/pipe-green.png")) {
+        std::cerr << "File not found: assets/pipe-green.png" << std::endl;
+        return EXIT_FAILURE;
+    }
+
+    if (!Pipe::loadTexture("assets/pipe-green.png")) {
+        return EXIT_FAILURE;
+    }
+
     sf::RenderWindow window(sf::VideoMode(800, 600), "Flappy Bird Clone");
     window.setFramerateLimit(60); // Cap the frame rate to 60 FPS
 
     Bird bird("assets/default_bird.png");
-    Background background("assets/background.png", 100.0f);
-    Ground ground("assets/ground.png", 200.0f);
+    Background background("assets/background.png", 100.0f); // Adjust speed as needed
+    Ground ground("assets/ground.png", 200.0f); // Adjust speed as needed
+
+    std::vector<Pipe> pipes;
+    pipes.emplace_back(200.0f);
+    pipes.back().spawnPipe(window.getSize().x, window.getSize().y);
 
     sf::Clock clock;
     sf::Clock fpsClock;
+    sf::Clock pipeSpawnClock;
     int frameCount = 0;
+    float pipeSpawnInterval = 3.0f;
+
+    bool isGameOver = false;
 
     while (window.isOpen()) {
         sf::Event event;
@@ -40,26 +59,73 @@ int main() {
                 window.close();
         }
 
-        float dt = clock.restart().asSeconds();
-        frameCount++;
+        if (!isGameOver) {
+            float dt = clock.restart().asSeconds();
+            frameCount++;
 
-        // Print FPS every second
-        if (fpsClock.getElapsedTime().asSeconds() >= 1.0f) {
-            std::cout << "FPS: " << frameCount << std::endl;
-            frameCount = 0;
-            fpsClock.restart();
+            if (fpsClock.getElapsedTime().asSeconds() >= 1.0f) {
+                std::cout << "FPS: " << frameCount << std::endl;
+                frameCount = 0;
+                fpsClock.restart();
+            }
+
+            bird.update(dt);
+            background.update(dt);
+            ground.update(dt);
+
+            // Spawn new pipes at intervals
+            if (pipeSpawnClock.getElapsedTime().asSeconds() >= pipeSpawnInterval) {
+                pipes.emplace_back(200.0f);
+                pipes.back().spawnPipe(window.getSize().x, window.getSize().y);
+                pipeSpawnClock.restart();
+            }
+
+            // Update pipes
+            for (auto& pipe : pipes) {
+                pipe.update(dt);
+            }
+
+            // Remove pipes that are off screen
+            pipes.erase(std::remove_if(pipes.begin(), pipes.end(), [](const Pipe& pipe) {
+                return pipe.isOffScreen();
+            }), pipes.end());
+
+            // Check for collisions
+            sf::FloatRect birdBounds = bird.getBounds();
+            for (const auto& pipe : pipes) {
+                for (const auto& bounds : pipe.getBounds()) {
+                    if (birdBounds.intersects(bounds)) {
+                        // isGameOver = true;
+                    }
+                }
+            }
+
+            // Check for collision with the ground
+            if (birdBounds.top + birdBounds.height >= ground.getGroundHeight()) {
+                // isGameOver = true;
+            }
+
+            window.clear(sf::Color::Black);
+            background.render(window); // Render the background
+
+            // Render pipes
+            for (auto& pipe : pipes) {
+                pipe.render(window);
+            }
+
+            ground.render(window); // Render the ground
+
+            bird.render(window); // Render the bird
+
+            window.display(); // Display the contents
+        } else {
+            // Game over logic
+            window.clear(sf::Color::Black);
+            // render a game over screen
+            window.display();
         }
-
-        bird.update(dt);
-        background.update(dt);
-        ground.update(dt);
-
-        window.clear(sf::Color::Black);
-        background.render(window); // Render the background
-        bird.render(window); // Render the bird
-        ground.render(window); // Render the ground
-        window.display(); // Display the contents
     }
+
 
     return 0;
 }

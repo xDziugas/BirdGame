@@ -16,5 +16,7 @@ add_executable(BirdGame main.cpp
         src/Background.cpp
         include/Background.h
         src/Ground.cpp
-        include/Ground.h)
+        include/Ground.h
+        src/Pipe.cpp
+        include/Pipe.h)
 target_link_libraries(BirdGame sfml-audio sfml-graphics sfml-system sfml-window)

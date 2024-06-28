@@ -7,7 +7,7 @@
 #include <iostream>
 #include <string.h>
 
-Bird::Bird(const std::string& texture_file) : velocity(0), gravity(1000.0f), jump_strength(-350.0f) {
+Bird::Bird(const std::string& texture_file) : velocity(0), gravity(1000.0f), jump_strength(-425.0f), jump_cooldown(0.3f), jump_cooldown_timer(0.0f) {
     init(texture_file);
 }
 
@@ -32,4 +32,8 @@ void Bird::update(float dt) {
 
 void Bird::render(sf::RenderWindow& window) {
     window.draw(bird_sprite);
+}
+
+sf::FloatRect Bird::getBounds() const {
+    return bird_sprite.getGlobalBounds();
 }

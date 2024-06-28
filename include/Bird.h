@@ -12,6 +12,7 @@ public:
     explicit Bird(const std::string& texture_file);
     void update(float dt);
     void render(sf::RenderWindow& window);
+    sf::FloatRect getBounds() const;
 
 private:
     sf::Texture bird_texture;

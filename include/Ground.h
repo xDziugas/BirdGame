@@ -12,6 +12,8 @@ public:
   Ground(const std::string& texture_file, float speed);
   void update(float dt);
   void render(sf::RenderWindow& window);
+  float getGroundHeight() const;
+
 private:
   sf::Texture ground_texture;
   sf::Sprite ground_sprite1;

@@ -21,8 +21,8 @@ Ground::Ground(const std::string& texture_file, float speed) : speed(speed) {
     ground_sprite1.setTextureRect(sf::IntRect(0, 0, window_width, ground_height));
     ground_sprite2.setTextureRect(sf::IntRect(0, 0, window_width, ground_height));
 
-    ground_sprite1.setPosition(0, 500); // Adjust the vertical position
-    ground_sprite2.setPosition(window_width, 500);
+    ground_sprite1.setPosition(0, 510); // Adjust the vertical position
+    ground_sprite2.setPosition(window_width, 510);
 }
 
 void Ground::update(float dt) {
@@ -31,10 +31,10 @@ void Ground::update(float dt) {
     ground_sprite2.move(-movement, 0);
 
     if (ground_sprite1.getPosition().x + ground_sprite1.getGlobalBounds().width < 0) {
-        ground_sprite1.setPosition(ground_sprite2.getPosition().x + ground_sprite2.getGlobalBounds().width, 550);
+        ground_sprite1.setPosition(ground_sprite2.getPosition().x + ground_sprite2.getGlobalBounds().width, 510);
     }
     if (ground_sprite2.getPosition().x + ground_sprite2.getGlobalBounds().width < 0) {
-        ground_sprite2.setPosition(ground_sprite1.getPosition().x + ground_sprite1.getGlobalBounds().width, 550);
+        ground_sprite2.setPosition(ground_sprite1.getPosition().x + ground_sprite1.getGlobalBounds().width, 510);
     }
 }
 
@@ -43,3 +43,6 @@ void Ground::render(sf::RenderWindow& window) {
     window.draw(ground_sprite2);
 }
 
+float Ground::getGroundHeight() const {
+    return ground_sprite1.getPosition().y;
+}
