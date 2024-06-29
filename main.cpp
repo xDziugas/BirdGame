@@ -2,11 +2,14 @@
 #include <SFML/Graphics.hpp>
 #include <filesystem>
 #include <vector>
+#include <ctime>
 
 #include "Bird.h"
 #include "Background.h"
 #include "Ground.h"
 #include "Pipe.h"
+
+enum GameState { StartScreen, Playing, GameOver };
 
 int main() {
 
@@ -39,6 +42,14 @@ int main() {
     sf::RenderWindow window(sf::VideoMode(800, 600), "Flappy Bird Clone");
     window.setFramerateLimit(60); // Cap the frame rate to 60 FPS
 
+    sf::Texture startScreenTexture, gameOverTexture;
+    startScreenTexture.loadFromFile("assets/start-screen.png");
+    gameOverTexture.loadFromFile("assets/gameover-message.png");
+    sf::Sprite startScreenSprite(startScreenTexture);
+    sf::Sprite gameOverSprite(gameOverTexture);
+
+    GameState gameState = StartScreen;
+
     Bird bird("assets/default_bird.png");
     Background background("assets/background.png", 100.0f); // Adjust speed as needed
     Ground ground("assets/ground.png", 200.0f); // Adjust speed as needed
@@ -53,20 +64,42 @@ int main() {
     int frameCount = 0;
     float pipeSpawnInterval = 1.5f;
 
-    bool isGameOver = false;
-
     while (window.isOpen()) {
         sf::Event event;
         while (window.pollEvent(event)) {
             if (event.type == sf::Event::Closed)
                 window.close();
+            if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Space) {
+                if (gameState == StartScreen) {
+                    gameState = Playing;
+                    clock.restart();
+                    pipeSpawnClock.restart();
+                    pipes.clear();
+                } else if (gameState == GameOver) {
+                    bird.reset();  // Reset bird position and state
+                    gameState = StartScreen;
+                }
+            }
         }
 
-        if (!isGameOver) {
-            float dt = clock.restart().asSeconds();
-            frameCount++;
+        if (gameState == StartScreen) {
+            window.clear();
+            window.draw(startScreenSprite);
+            window.display();
+            continue;
+        }
 
-            if (fpsClock.getElapsedTime().asSeconds() >= 1.0f) {
+        if (gameState == GameOver) {
+            window.clear();
+            window.draw(gameOverSprite);
+            window.display();
+            continue;
+        }
+
+        float dt = clock.restart().asSeconds();
+        frameCount++;
+
+        if (fpsClock.getElapsedTime().asSeconds() >= 1.0f) {
                 std::cout << "FPS: " << frameCount << std::endl;
                 frameCount = 0;
                 fpsClock.restart();
@@ -98,14 +131,14 @@ int main() {
             for (const auto& pipe : pipes) {
                 for (const auto& bounds : pipe.getBounds()) {
                     if (birdBounds.intersects(bounds)) {
-                        isGameOver = true;
+                        gameState = GameOver;
                     }
                 }
             }
 
             // Check for collision with the ground
             if (birdBounds.top + birdBounds.height >= window.getSize().y - ground.getGroundHeight()) {
-                isGameOver = true;
+                gameState = GameOver;
             }
 
             window.clear(sf::Color::Black);
@@ -121,12 +154,7 @@ int main() {
             bird.render(window); // Render the bird
 
             window.display(); // Display the contents
-        } else {
-            // Game over logic
-            window.clear(sf::Color::Black);
-            // render a game over screen
-            window.display();
-        }
+
     }
 
 

@@ -13,6 +13,7 @@ public:
     void update(float dt);
     void render(sf::RenderWindow& window);
     sf::FloatRect getBounds() const;
+    void reset();
 
 private:
     sf::Texture bird_texture;

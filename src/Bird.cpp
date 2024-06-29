@@ -30,6 +30,11 @@ void Bird::update(float dt) {
     bird_sprite.move(0, velocity * dt);
 }
 
+void Bird::reset() {
+    bird_sprite.setPosition(100, 300);  // Set to starting position
+    velocity = 0;                  // Reset velocity
+}
+
 void Bird::render(sf::RenderWindow& window) {
     window.draw(bird_sprite);
 }
