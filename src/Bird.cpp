@@ -31,8 +31,8 @@ void Bird::update(float dt) {
 }
 
 void Bird::reset() {
-    bird_sprite.setPosition(100, 300);  // Set to starting position
-    velocity = 0;                  // Reset velocity
+    bird_sprite.setPosition(100, 300); // Set to starting position
+    velocity = 0; // Reset velocity
 }
 
 void Bird::render(sf::RenderWindow& window) {
@@ -41,4 +41,8 @@ void Bird::render(sf::RenderWindow& window) {
 
 sf::FloatRect Bird::getBounds() const {
     return bird_sprite.getGlobalBounds();
+}
+
+sf::Vector2f Bird::getPosition() const {
+    return bird_sprite.getPosition();
 }

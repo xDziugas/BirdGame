@@ -59,3 +59,16 @@ bool Pipe::isOffScreen() const {
 std::vector<sf::FloatRect> Pipe::getBounds() const {
     return { pipe_top.getGlobalBounds(), pipe_bottom.getGlobalBounds() };
 }
+
+bool Pipe::isPassed() const {
+    return passed;
+}
+
+void Pipe::markAsPassed() {
+    passed = true;
+}
+
+sf::Vector2f Pipe::getPosition() const {
+    return pipe_top.getPosition() + sf::Vector2f(pipe_top.getGlobalBounds().width, 0);
+}
+

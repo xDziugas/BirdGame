@@ -14,6 +14,7 @@ public:
     void render(sf::RenderWindow& window);
     sf::FloatRect getBounds() const;
     void reset();
+    sf::Vector2f getPosition() const;
 
 private:
     sf::Texture bird_texture;

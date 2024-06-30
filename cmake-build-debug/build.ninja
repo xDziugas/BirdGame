@@ -84,6 +84,13 @@ build CMakeFiles/BirdGame.dir/src/Pipe.cpp.obj: CXX_COMPILER__BirdGame_unscanned
   OBJECT_DIR = CMakeFiles\BirdGame.dir
   OBJECT_FILE_DIR = CMakeFiles\BirdGame.dir\src
 
+build CMakeFiles/BirdGame.dir/src/Game.cpp.obj: CXX_COMPILER__BirdGame_unscanned_Debug C$:/Dziugo$ RTX$ I7/Programming$ Projects/C++/BirdGame/src/Game.cpp || cmake_object_order_depends_target_BirdGame
+  DEP_FILE = CMakeFiles\BirdGame.dir\src\Game.cpp.obj.d
+  FLAGS = -g -fdiagnostics-color=always
+  INCLUDES = -IC:/SFML/SFML-2.6.1/include/SFML -I"C:/Dziugo RTX I7/Programming Projects/C++/BirdGame/include" -isystem C:/SFML/SFML-2.6.1/include
+  OBJECT_DIR = CMakeFiles\BirdGame.dir
+  OBJECT_FILE_DIR = CMakeFiles\BirdGame.dir\src
+
 
 # =============================================================================
 # Link build statements for EXECUTABLE target BirdGame
@@ -92,7 +99,7 @@ build CMakeFiles/BirdGame.dir/src/Pipe.cpp.obj: CXX_COMPILER__BirdGame_unscanned
 #############################################
 # Link the executable BirdGame.exe
 
-build BirdGame.exe: CXX_EXECUTABLE_LINKER__BirdGame_Debug CMakeFiles/BirdGame.dir/main.cpp.obj CMakeFiles/BirdGame.dir/src/Bird.cpp.obj CMakeFiles/BirdGame.dir/src/Background.cpp.obj CMakeFiles/BirdGame.dir/src/Ground.cpp.obj CMakeFiles/BirdGame.dir/src/Pipe.cpp.obj | C$:/SFML/SFML-2.6.1/lib/libsfml-audio-d.a C$:/SFML/SFML-2.6.1/lib/libsfml-graphics-d.a C$:/SFML/SFML-2.6.1/lib/libsfml-window-d.a C$:/SFML/SFML-2.6.1/lib/libsfml-system-d.a
+build BirdGame.exe: CXX_EXECUTABLE_LINKER__BirdGame_Debug CMakeFiles/BirdGame.dir/main.cpp.obj CMakeFiles/BirdGame.dir/src/Bird.cpp.obj CMakeFiles/BirdGame.dir/src/Background.cpp.obj CMakeFiles/BirdGame.dir/src/Ground.cpp.obj CMakeFiles/BirdGame.dir/src/Pipe.cpp.obj CMakeFiles/BirdGame.dir/src/Game.cpp.obj | C$:/SFML/SFML-2.6.1/lib/libsfml-audio-d.a C$:/SFML/SFML-2.6.1/lib/libsfml-graphics-d.a C$:/SFML/SFML-2.6.1/lib/libsfml-window-d.a C$:/SFML/SFML-2.6.1/lib/libsfml-system-d.a
   FLAGS = -g
   LINK_LIBRARIES = C:/SFML/SFML-2.6.1/lib/libsfml-audio-d.a  C:/SFML/SFML-2.6.1/lib/libsfml-graphics-d.a  C:/SFML/SFML-2.6.1/lib/libsfml-window-d.a  C:/SFML/SFML-2.6.1/lib/libsfml-system-d.a  -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
   OBJECT_DIR = CMakeFiles\BirdGame.dir

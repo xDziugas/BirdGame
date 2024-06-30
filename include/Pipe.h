@@ -16,6 +16,9 @@ public:
     void render(sf::RenderWindow& window);
     bool isOffScreen() const;
     std::vector<sf::FloatRect> getBounds() const;
+    bool isPassed() const;
+    void markAsPassed();
+    sf::Vector2f getPosition() const;
 
     static bool loadTexture(const std::string& texture_file);
 
@@ -25,6 +28,7 @@ private:
     sf::Sprite pipe_bottom;
     float speed;
     float gap;
+    bool passed = false;
 
     void initSprites();
 };
