@@ -25,7 +25,7 @@ private:
     void update(sf::Time dt);
     void render();
 
-    std::function<void()> resetGame();
+    void resetGame();
     void spawnPipe();
     void checkCollisions();
 

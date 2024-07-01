@@ -69,12 +69,12 @@ Game::Game()
     settingsMessageText.setFont(font);
     settingsMessageText.setCharacterSize(50);
     settingsMessageText.setFillColor(sf::Color::White);
-    settingsMessageText.setString("Settings - Press space to go back");
+    settingsMessageText.setString("Settings! Press space to go back");
 
     sf::FloatRect settingsTextRect = settingsMessageText.getLocalBounds();
     settingsMessageText.setOrigin(settingsTextRect.left + settingsTextRect.width / 2.0f,
                                   settingsTextRect.top + settingsTextRect.height / 2.0f);
-    settingsMessageText.setPosition(window.getSize().x / 2.0f, window.getSize().y / 2.0f - 50.0f);
+    settingsMessageText.setPosition(window.getSize().x / 2.0f, window.getSize().y / 2.0f - 150.0f);
 
     highScoreManager.loadHighScores(); // Load high scores when the game starts
 
@@ -85,48 +85,19 @@ void Game::run() {
         processEvents();
         if (gameState.get() == Playing && !isPaused) {
             update(clock.restart());
-        } else if (isPaused) {
-            clock.restart();
-            // pipeSpawnClock.restart();
         }
         render();
     }
 }
 
-
-// void Game::processEvents() {
-//     sf::Event event;
-//     while (window.pollEvent(event)) {
-//         if (event.type == sf::Event::Closed)
-//             window.close();
-//         if (event.type == sf::Event::KeyPressed) {
-//             inputHandler.handleInput(gameState, clock, pipeSpawnClock, isPaused, pauseTime, totalPauseTime, pipes, score);
-//         }
-//     }
-// }
-
-
 void Game::processEvents() {
+
     sf::Event event;
     while (window.pollEvent(event)) {
-        if (event.type == sf::Event::Closed)
+        if (event.type == sf::Event::Closed) {
             window.close();
-        if (event.type == sf::Event::KeyPressed) {
-            if (event.key.code == sf::Keyboard::Space) {
-                inputHandler.handleInput(gameState, clock, pipeSpawnClock, isPaused, pauseTime, totalPauseTime, pipes, score, std::bind(&Game::resetGame, this));
-            } else if (event.key.code == sf::Keyboard::P) {
-                if (gameState.get() == Playing) {
-                    gameState = Pause;
-                    pauseTime = clock.getElapsedTime();  // Record the time when the game was paused
-                } else if (gameState.get() == Pause) {
-                    gameState = Playing;
-                    totalPauseTime += clock.getElapsedTime() - pauseTime;  // Accumulate the total pause duration
-                    clock.restart();
-                }
-            } else if (event.key.code == sf::Keyboard::S && gameState.get() != Playing) {
-                gameState = Settings;
-            }
         }
+        inputHandler.handleInput(event, gameState, clock, pipeSpawnClock, isPaused, pauseTime, totalPauseTime, pipes, score, [this]() { resetGame(); });
     }
 }
 
@@ -195,7 +166,7 @@ void Game::render() {
         window.draw(gameOverSprite);
 
         std::stringstream ss;
-        ss << "Score: " << score;
+        ss << "Score! " << score;
         scoreText.setString(ss.str());
         scoreText.setPosition(300, 20);
         window.draw(scoreText);
@@ -238,11 +209,12 @@ void Game::render() {
 }
 
 
-std::function<void()> Game::resetGame() {
+void Game::resetGame() {
     bird.reset();
     highScoreManager.updateHighScores(score);
     gameState.set(StartScreen);
 }
+
 
 
 void Game::spawnPipe() {

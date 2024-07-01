@@ -13,7 +13,7 @@
 
 class InputHandler {
 public:
-    void handleInput(State& gameState, sf::Clock& clock, sf::Clock& pipeSpawnClock, bool& isPaused,
+    void handleInput(sf::Event& event, State& gameState, sf::Clock& clock, sf::Clock& pipeSpawnClock, bool& isPaused,
                      sf::Time& pauseTime, sf::Time& totalPauseTime, std::vector<Pipe>& pipes, int& score,
                      const std::function<void()>& resetGameCallback);  // Add this parameter
 };
