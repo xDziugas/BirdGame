@@ -11,8 +11,9 @@
 #include "Background.h"
 #include "Ground.h"
 #include "Pipe.h"
-
-enum GameState { StartScreen, Playing, GameOver };
+#include "State.h"
+#include "InputHandler.h"
+#include "HighScoreManager.h"
 
 class Game {
 public:
@@ -23,29 +24,33 @@ private:
     void processEvents();
     void update(sf::Time dt);
     void render();
-    void resetGame();
-    void handleInput();
+
+    std::function<void()> resetGame();
+    void spawnPipe();
+    void checkCollisions();
 
     sf::RenderWindow window;
-    GameState gameState;
-
+    State gameState;
     Bird bird;
     Background background;
     Ground ground;
     std::vector<Pipe> pipes;
-
     sf::Clock clock;
     sf::Clock pipeSpawnClock;
+    sf::Time pauseTime;
+    sf::Time totalPauseTime;
     float pipeSpawnInterval;
-
     int score;
+    bool isPaused;
     sf::Font font;
     sf::Text scoreText;
-
-    sf::Texture startScreenTexture;
+    sf::Text startMessageText;
+    sf::Text pauseMessageText;
+    sf::Text settingsMessageText;
     sf::Texture gameOverTexture;
-    sf::Sprite startScreenSprite;
     sf::Sprite gameOverSprite;
+    InputHandler inputHandler;
+    HighScoreManager highScoreManager;
 };
 
 #endif //GAME_H

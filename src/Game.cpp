@@ -7,10 +7,13 @@
 #include <iostream>
 #include <filesystem>
 #include <ctime>
+#include <iomanip>
+#include "State.h"
 
 Game::Game()
-    : window(sf::VideoMode(800, 600), "Flappy Bird Clone"), gameState(StartScreen), bird("assets/default_bird.png"),
-      background("assets/background.png", 100.0f), ground("assets/ground.png", 200.0f), pipeSpawnInterval(1.5f), score(0) {
+    : window(sf::VideoMode(800, 600), "Flappy Bird Clone"), gameState(State(StartScreen)), bird("assets/default_bird.png"),
+      background("assets/background.png", 100.0f), ground("assets/ground.png", 200.0f), pipeSpawnInterval(1.5f), score(0),
+      highScoreManager("highscores.txt") {
 
     window.setFramerateLimit(60); // Cap the frame rate to 60 FPS
 
@@ -20,9 +23,8 @@ Game::Game()
         !std::filesystem::exists("assets/background.png") ||
         !std::filesystem::exists("assets/ground.png") ||
         !std::filesystem::exists("assets/pipe-green.png") ||
-        !std::filesystem::exists("assets/start-screen.png") ||
         !std::filesystem::exists("assets/gameover-message.png") ||
-        !std::filesystem::exists("assets/arial.ttf")) {
+        !std::filesystem::exists("assets/arcade.ttf")) {
         std::cerr << "One or more assets not found" << std::endl;
         exit(EXIT_FAILURE);
         }
@@ -31,12 +33,10 @@ Game::Game()
         exit(EXIT_FAILURE);
     }
 
-    startScreenTexture.loadFromFile("assets/start-screen.png");
     gameOverTexture.loadFromFile("assets/gameover-message.png");
-    startScreenSprite.setTexture(startScreenTexture);
     gameOverSprite.setTexture(gameOverTexture);
 
-    if (!font.loadFromFile("assets/arial.ttf")) {
+    if (!font.loadFromFile("assets/arcade.ttf")) {
         std::cerr << "Failed to load font" << std::endl;
         exit(EXIT_FAILURE);
     }
@@ -45,40 +45,91 @@ Game::Game()
     scoreText.setCharacterSize(50);
     scoreText.setFillColor(sf::Color::White);
     scoreText.setPosition(100, 5);
+
+    startMessageText.setFont(font);
+    startMessageText.setCharacterSize(50);
+    startMessageText.setFillColor(sf::Color::White);
+    startMessageText.setString("Press space to start!");
+
+    sf::FloatRect textRect = startMessageText.getLocalBounds();
+    startMessageText.setOrigin(textRect.left + textRect.width / 2.0f,
+                               textRect.top + textRect.height / 2.0f);
+    startMessageText.setPosition(window.getSize().x / 2.0f, window.getSize().y / 2.0f - 50.0f);
+
+    pauseMessageText.setFont(font);
+    pauseMessageText.setCharacterSize(50);
+    pauseMessageText.setFillColor(sf::Color::White);
+    pauseMessageText.setString("Press space to resume!");
+
+    sf::FloatRect pauseTextRect = pauseMessageText.getLocalBounds();
+    pauseMessageText.setOrigin(pauseTextRect.left + pauseTextRect.width / 2.0f,
+                               pauseTextRect.top + pauseTextRect.height / 2.0f);
+    pauseMessageText.setPosition(window.getSize().x / 2.0f, window.getSize().y / 2.0f - 50.0f);
+
+    settingsMessageText.setFont(font);
+    settingsMessageText.setCharacterSize(50);
+    settingsMessageText.setFillColor(sf::Color::White);
+    settingsMessageText.setString("Settings - Press space to go back");
+
+    sf::FloatRect settingsTextRect = settingsMessageText.getLocalBounds();
+    settingsMessageText.setOrigin(settingsTextRect.left + settingsTextRect.width / 2.0f,
+                                  settingsTextRect.top + settingsTextRect.height / 2.0f);
+    settingsMessageText.setPosition(window.getSize().x / 2.0f, window.getSize().y / 2.0f - 50.0f);
+
+    highScoreManager.loadHighScores(); // Load high scores when the game starts
+
 }
 
 void Game::run() {
     while (window.isOpen()) {
         processEvents();
-        if (gameState == Playing) {
+        if (gameState.get() == Playing && !isPaused) {
             update(clock.restart());
+        } else if (isPaused) {
+            clock.restart();
+            // pipeSpawnClock.restart();
         }
         render();
     }
 }
+
+
+// void Game::processEvents() {
+//     sf::Event event;
+//     while (window.pollEvent(event)) {
+//         if (event.type == sf::Event::Closed)
+//             window.close();
+//         if (event.type == sf::Event::KeyPressed) {
+//             inputHandler.handleInput(gameState, clock, pipeSpawnClock, isPaused, pauseTime, totalPauseTime, pipes, score);
+//         }
+//     }
+// }
+
 
 void Game::processEvents() {
     sf::Event event;
     while (window.pollEvent(event)) {
         if (event.type == sf::Event::Closed)
             window.close();
-        if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Space) {
-            handleInput();
+        if (event.type == sf::Event::KeyPressed) {
+            if (event.key.code == sf::Keyboard::Space) {
+                inputHandler.handleInput(gameState, clock, pipeSpawnClock, isPaused, pauseTime, totalPauseTime, pipes, score, std::bind(&Game::resetGame, this));
+            } else if (event.key.code == sf::Keyboard::P) {
+                if (gameState.get() == Playing) {
+                    gameState = Pause;
+                    pauseTime = clock.getElapsedTime();  // Record the time when the game was paused
+                } else if (gameState.get() == Pause) {
+                    gameState = Playing;
+                    totalPauseTime += clock.getElapsedTime() - pauseTime;  // Accumulate the total pause duration
+                    clock.restart();
+                }
+            } else if (event.key.code == sf::Keyboard::S && gameState.get() != Playing) {
+                gameState = Settings;
+            }
         }
     }
 }
 
-void Game::handleInput() {
-    if (gameState == StartScreen) {
-        gameState = Playing;
-        clock.restart();
-        pipeSpawnClock.restart();
-        pipes.clear();
-        score = 0;  // Reset score at the start of the game
-    } else if (gameState == GameOver) {
-        resetGame();
-    }
-}
 
 void Game::update(sf::Time dt) {
     bird.update(dt.asSeconds());
@@ -86,10 +137,9 @@ void Game::update(sf::Time dt) {
     ground.update(dt.asSeconds());
 
     // Spawn new pipes at intervals
-    if (pipeSpawnClock.getElapsedTime().asSeconds() >= pipeSpawnInterval) {
-        pipes.emplace_back(200.0f);
-        pipes.back().spawnPipe(window.getSize().x, window.getSize().y, ground.getGroundHeight());
-        pipeSpawnClock.restart();
+    if ((pipeSpawnClock.getElapsedTime() - totalPauseTime).asSeconds() >= pipeSpawnInterval) {
+        spawnPipe();
+        totalPauseTime = sf::Time::Zero;  // Reset total pause time after spawning a pipe
     }
 
     // Update pipes
@@ -110,34 +160,62 @@ void Game::update(sf::Time dt) {
         return pipe.isOffScreen();
     }), pipes.end());
 
-    // Check for collisions
-    sf::FloatRect birdBounds = bird.getBounds();
-    for (const auto &pipe : pipes) {
-        for (const auto &bounds : pipe.getBounds()) {
-            if (birdBounds.intersects(bounds)) {
-                gameState = GameOver;
-            }
-        }
-    }
-
-    // Check for collision with the ground
-    if (birdBounds.top + birdBounds.height >= window.getSize().y - ground.getGroundHeight()) {
-        gameState = GameOver;
-    }
+    checkCollisions();
 }
 
 void Game::render() {
     window.clear();
 
-    if (gameState == StartScreen) {
-        window.draw(startScreenSprite);
-    } else if (gameState == GameOver) {
+    if (gameState.get() == StartScreen) {
+        // Draw game elements without updating
+        background.render(window);
+        for (auto &pipe : pipes) {
+            pipe.render(window);
+        }
+        ground.render(window);
+        bird.render(window);
+
+        // Draw start message
+        window.draw(startMessageText);
+    } else if (gameState.get() == Pause) {
+        // Draw game elements without updating
+        background.render(window);
+        for (auto &pipe : pipes) {
+            pipe.render(window);
+        }
+        ground.render(window);
+        bird.render(window);
+
+        // Draw pause message
+        window.draw(pauseMessageText);
+    } else if (gameState.get() == Settings) {
+        // Draw settings message
+        window.draw(settingsMessageText);
+    } else if (gameState.get() == GameOver) {
         window.draw(gameOverSprite);
+
         std::stringstream ss;
         ss << "Score: " << score;
         scoreText.setString(ss.str());
-        scoreText.setPosition(300, 20);  // Center the score on the screen
+        scoreText.setPosition(300, 20);
         window.draw(scoreText);
+
+        // Display high scores
+        float yOffset = 100;
+        for (size_t i = 0; i < highScoreManager.getHighScores().size(); ++i) {
+            sf::Text highScoreText;
+            highScoreText.setFont(font);
+            highScoreText.setCharacterSize(30);
+            highScoreText.setFillColor(sf::Color::White);
+            highScoreText.setPosition(300, yOffset + i * 40);
+
+            // Format the high score with four digits
+            std::stringstream hs_ss;
+            hs_ss << std::setw(4) << std::setfill('0') << highScoreManager.getHighScores()[i];
+            highScoreText.setString(std::to_string(i + 1) + "! " + hs_ss.str());
+
+            window.draw(highScoreText);
+        }
     } else {
         background.render(window); // Render the background
 
@@ -159,7 +237,34 @@ void Game::render() {
     window.display();
 }
 
-void Game::resetGame() {
+
+std::function<void()> Game::resetGame() {
     bird.reset();
-    gameState = StartScreen;
+    highScoreManager.updateHighScores(score);
+    gameState.set(StartScreen);
 }
+
+
+void Game::spawnPipe() {
+    pipes.emplace_back(200.0f);
+    pipes.back().spawnPipe(window.getSize().x, window.getSize().y, ground.getGroundHeight());
+    pipeSpawnClock.restart();
+}
+
+
+void Game::checkCollisions() {
+    sf::FloatRect birdBounds = bird.getBounds();
+    for (const auto &pipe : pipes) {
+        for (const auto &bounds : pipe.getBounds()) {
+            if (birdBounds.intersects(bounds)) {
+                gameState.set(GameOver);
+            }
+        }
+    }
+
+    // Check for collision with the ground
+    if (birdBounds.top + birdBounds.height >= window.getSize().y - ground.getGroundHeight()) {
+        gameState.set(GameOver);
+    }
+}
+
