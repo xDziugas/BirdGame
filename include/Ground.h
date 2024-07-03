@@ -9,7 +9,7 @@
 
 class Ground {
 public:
-  Ground(const std::string& texture_file, float speed);
+  Ground(const std::string& texture_file, float speed, float width, float height, float y);
   void update(float dt);
   void render(sf::RenderWindow& window);
   float getGroundHeight() const;

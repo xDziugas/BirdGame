@@ -4,7 +4,9 @@
 
 #include "../include/Background.h"
 
-Background::Background(const std::string& texture_file, float speed) : speed(speed) {
+#include "GameConfig.h"
+
+Background::Background(const std::string& texture_file, float speed, const GameConfig::WindowConfig& config) : speed(speed), config(config) {
     if(!background_texture.loadFromFile(texture_file)) {
         // Handle Error
     }
@@ -13,8 +15,8 @@ Background::Background(const std::string& texture_file, float speed) : speed(spe
     background_sprite2.setTexture(background_texture);
 
     // Resize the background
-    float window_width = 800.0f; // window width -> todo: get window width from window object
-    float window_height = 600.0f; // window height -> todo: get window height from window object
+    int window_width = config.width;
+    int window_height = config.height;
 
     background_sprite1.setTextureRect(sf::IntRect(0, 0, window_width, window_height));
     background_sprite2.setTextureRect(sf::IntRect(0, 0, window_width, window_height));

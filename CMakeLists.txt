@@ -26,5 +26,8 @@ add_executable(BirdGame main.cpp
         src/InputHandler.cpp
         include/InputHandler.h
         src/HighScoreManager.cpp
-        include/HighScoreManager.h)
+        include/HighScoreManager.h
+        src/GameConfig.cpp
+        include/GameConfig.h
+        include/json.hpp)
 target_link_libraries(BirdGame sfml-audio sfml-graphics sfml-system sfml-window)

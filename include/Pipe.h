@@ -8,10 +8,13 @@
 #include <SFML/Graphics.hpp>
 #include <vector>
 
+#include "GameConfig.h"
+
 class Pipe {
 public:
-    Pipe(float speed);
-    void spawnPipe(float x, float screenHeight, float groundHeight);
+    explicit Pipe(const GameConfig::PipeConfig& config);
+
+    void spawnPipe(float x, float screenHeight, float groundHeight, float min, float max);
     void update(float dt);
     void render(sf::RenderWindow& window);
     bool isOffScreen() const;

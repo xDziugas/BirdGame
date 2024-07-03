@@ -10,46 +10,42 @@
 #include <iomanip>
 #include "State.h"
 
-Game::Game()
-    : window(sf::VideoMode(800, 600), "Flappy Bird Clone"), gameState(State(StartScreen)), bird("assets/default_bird.png"),
-      background("assets/background.png", 100.0f), ground("assets/ground.png", 200.0f), pipeSpawnInterval(1.5f), score(0),
-      highScoreManager("highscores.txt") {
+Game::Game(const GameConfig &config)
+    : window(sf::VideoMode(config.window.width, config.window.height), config.window.title),
+    config(config),
+    gameState(State(StartScreen)),
+    bird(config.bird),
+    background(config.background.texture,config.background.scroll_speed, config.window),
+    ground(config.ground.texture, config.ground.scroll_speed, config.window.width, config.ground.height, config.window.height - config.ground.height),
+    pipeSpawnInterval(config.pipe.spawn_interval), score(0),
+    isPaused(false),
+    highScoreManager("highscores.txt") {
 
-    window.setFramerateLimit(60); // Cap the frame rate to 60 FPS
+    window.setFramerateLimit(config.window.framerate_limit); // Cap the frame rate to 60 FPS
 
     srand(static_cast<unsigned int>(time(nullptr))); // Seed the random number generator
 
-    if (!std::filesystem::exists("assets/default_bird.png") ||
-        !std::filesystem::exists("assets/background.png") ||
-        !std::filesystem::exists("assets/ground.png") ||
-        !std::filesystem::exists("assets/pipe-green.png") ||
-        !std::filesystem::exists("assets/gameover-message.png") ||
-        !std::filesystem::exists("assets/arcade.ttf")) {
-        std::cerr << "One or more assets not found" << std::endl;
-        exit(EXIT_FAILURE);
-        }
-
-    if (!Pipe::loadTexture("assets/pipe-green.png")) {
+    if (!Pipe::loadTexture(config.pipe.texture)) {
         exit(EXIT_FAILURE);
     }
 
-    gameOverTexture.loadFromFile("assets/gameover-message.png");
+    gameOverTexture.loadFromFile(config.gameSettings.gameOverTexture);
     gameOverSprite.setTexture(gameOverTexture);
 
-    if (!font.loadFromFile("assets/arcade.ttf")) {
+    if (!font.loadFromFile(config.gameSettings.font.file)) {
         std::cerr << "Failed to load font" << std::endl;
         exit(EXIT_FAILURE);
     }
 
     scoreText.setFont(font);
-    scoreText.setCharacterSize(50);
-    scoreText.setFillColor(sf::Color::White);
-    scoreText.setPosition(100, 5);
+    scoreText.setCharacterSize(config.gameSettings.scoreMessage.size);
+    scoreText.setFillColor(config.gameSettings.scoreMessage.color);
+    scoreText.setPosition(config.gameSettings.scoreMessage.position);
 
     startMessageText.setFont(font);
-    startMessageText.setCharacterSize(50);
-    startMessageText.setFillColor(sf::Color::White);
-    startMessageText.setString("Press space to start!");
+    startMessageText.setCharacterSize(config.gameSettings.startMessage.size);
+    startMessageText.setFillColor(config.gameSettings.startMessage.color);
+    startMessageText.setString(config.gameSettings.startMessage.text);
 
     sf::FloatRect textRect = startMessageText.getLocalBounds();
     startMessageText.setOrigin(textRect.left + textRect.width / 2.0f,
@@ -57,9 +53,9 @@ Game::Game()
     startMessageText.setPosition(window.getSize().x / 2.0f, window.getSize().y / 2.0f - 50.0f);
 
     pauseMessageText.setFont(font);
-    pauseMessageText.setCharacterSize(50);
-    pauseMessageText.setFillColor(sf::Color::White);
-    pauseMessageText.setString("Press space to resume!");
+    pauseMessageText.setCharacterSize(config.gameSettings.pauseMessage.size);
+    pauseMessageText.setFillColor(config.gameSettings.pauseMessage.color);
+    pauseMessageText.setString(config.gameSettings.pauseMessage.text);
 
     sf::FloatRect pauseTextRect = pauseMessageText.getLocalBounds();
     pauseMessageText.setOrigin(pauseTextRect.left + pauseTextRect.width / 2.0f,
@@ -67,9 +63,9 @@ Game::Game()
     pauseMessageText.setPosition(window.getSize().x / 2.0f, window.getSize().y / 2.0f - 50.0f);
 
     settingsMessageText.setFont(font);
-    settingsMessageText.setCharacterSize(50);
-    settingsMessageText.setFillColor(sf::Color::White);
-    settingsMessageText.setString("Settings! Press space to go back");
+    settingsMessageText.setCharacterSize(config.gameSettings.settingsMessage.size);
+    settingsMessageText.setFillColor(config.gameSettings.settingsMessage.color);
+    settingsMessageText.setString(config.gameSettings.settingsMessage.text);
 
     sf::FloatRect settingsTextRect = settingsMessageText.getLocalBounds();
     settingsMessageText.setOrigin(settingsTextRect.left + settingsTextRect.width / 2.0f,
@@ -91,7 +87,6 @@ void Game::run() {
 }
 
 void Game::processEvents() {
-
     sf::Event event;
     while (window.pollEvent(event)) {
         if (event.type == sf::Event::Closed) {
@@ -168,7 +163,11 @@ void Game::render() {
         std::stringstream ss;
         ss << "Score! " << score;
         scoreText.setString(ss.str());
-        scoreText.setPosition(300, 20);
+        scoreText.setPosition(
+            config.gameSettings.scoreMessage.position.x - scoreText.getLocalBounds().width / 2.0f,
+            config.gameSettings.scoreMessage.position.y
+        );
+
         window.draw(scoreText);
 
         // Display high scores
@@ -178,11 +177,11 @@ void Game::render() {
             highScoreText.setFont(font);
             highScoreText.setCharacterSize(30);
             highScoreText.setFillColor(sf::Color::White);
-            highScoreText.setPosition(300, yOffset + i * 40);
+            highScoreText.setPosition(window.getSize().x / 2 -100, yOffset + i * 40);
 
             // Format the high score with four digits
             std::stringstream hs_ss;
-            hs_ss << std::setw(4) << std::setfill('0') << highScoreManager.getHighScores()[i];
+            hs_ss << std::setw(5) << std::setfill('0') << highScoreManager.getHighScores()[i];
             highScoreText.setString(std::to_string(i + 1) + "! " + hs_ss.str());
 
             window.draw(highScoreText);
@@ -201,13 +200,13 @@ void Game::render() {
         std::stringstream ss;
         ss << score;
         scoreText.setString(ss.str());
-        scoreText.setPosition(400, 20);  // Position at the top of the screen
+        scoreText.setPosition(config.gameSettings.scoreMessage.position.x,
+                             config.gameSettings.scoreMessage.position.y);
         window.draw(scoreText);
     }
 
     window.display();
 }
-
 
 void Game::resetGame() {
     bird.reset();
@@ -215,14 +214,11 @@ void Game::resetGame() {
     gameState.set(StartScreen);
 }
 
-
-
 void Game::spawnPipe() {
-    pipes.emplace_back(200.0f);
-    pipes.back().spawnPipe(window.getSize().x, window.getSize().y, ground.getGroundHeight());
+    pipes.emplace_back(config.pipe);
+    pipes.back().spawnPipe(window.getSize().x, window.getSize().y, ground.getGroundHeight(), config.pipe.minPipeHeightMultiplier, config.pipe.maxPipeHeightMultiplier);
     pipeSpawnClock.restart();
 }
-
 
 void Game::checkCollisions() {
     sf::FloatRect birdBounds = bird.getBounds();

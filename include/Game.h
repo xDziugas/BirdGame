@@ -9,6 +9,7 @@
 #include <vector>
 #include "Bird.h"
 #include "Background.h"
+#include "GameConfig.h"
 #include "Ground.h"
 #include "Pipe.h"
 #include "State.h"
@@ -17,10 +18,12 @@
 
 class Game {
 public:
-    Game();
+    Game(const GameConfig& config);
     void run();
 
 private:
+    GameConfig config;
+
     void processEvents();
     void update(sf::Time dt);
     void render();

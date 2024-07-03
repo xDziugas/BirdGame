@@ -7,8 +7,8 @@
 #include <iostream>
 #include <string.h>
 
-Bird::Bird(const std::string& texture_file) : velocity(0), gravity(1000.0f), jump_strength(-425.0f), jump_cooldown(0.3f), jump_cooldown_timer(0.0f) {
-    init(texture_file);
+Bird::Bird(const GameConfig::BirdConfig& config) : velocity(0), gravity(config.gravity), jump_strength(config.jump_strength), jump_cooldown(config.jump_cooldown), jump_cooldown_timer(0.0f), config(config) {
+    init(config.texture);
 }
 
 void Bird::init(const std::string& texture_file) {
@@ -17,7 +17,7 @@ void Bird::init(const std::string& texture_file) {
         exit(EXIT_FAILURE);
     }
     bird_sprite.setTexture(bird_texture);
-    bird_sprite.setPosition(100, 300);  // Initial position
+    bird_sprite.setPosition(config.default_position);  // Initial position
 }
 
 void Bird::update(float dt) {
@@ -31,7 +31,7 @@ void Bird::update(float dt) {
 }
 
 void Bird::reset() {
-    bird_sprite.setPosition(100, 300); // Set to starting position
+    bird_sprite.setPosition(config.default_position); // Set to starting position
     velocity = 0; // Reset velocity
 }
 

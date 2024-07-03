@@ -7,9 +7,11 @@
 #include <cstring>
 #include <cstdlib>
 
+#include "GameConfig.h"
+
 sf::Texture Pipe::pipe_texture;
 
-Pipe::Pipe(float speed) : speed(speed), gap(150.0f) {
+Pipe::Pipe(const GameConfig::PipeConfig& config) : speed(config.speed), gap(config.gap) {
     initSprites();
 }
 
@@ -27,9 +29,9 @@ void Pipe::initSprites() {
     pipe_bottom.setRotation(180); // Rotate bottom pipe
 }
 
-void Pipe::spawnPipe(float x, float screenHeight, float groundHeight) {
-    float min_height = 0.3f * screenHeight;
-    float max_height = 0.7f * screenHeight + gap - groundHeight;
+void Pipe::spawnPipe(float x, float screenHeight, float groundHeight, float min, float max) {
+    float min_height = min * screenHeight;
+    float max_height = max * screenHeight + gap - groundHeight;
 
     // Generate a random height for the top pipe within the specified bounds
     float top_pipe_end = min_height + rand() % static_cast<int>(max_height - min_height);

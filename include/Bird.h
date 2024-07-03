@@ -7,9 +7,11 @@
 
 #include <SFML/Graphics.hpp>
 
+#include "GameConfig.h"
+
 class Bird {
 public:
-    explicit Bird(const std::string& texture_file);
+    explicit Bird(const GameConfig::BirdConfig& config);
     void update(float dt);
     void render(sf::RenderWindow& window);
     sf::FloatRect getBounds() const;
@@ -24,6 +26,7 @@ private:
     float jump_strength;
     float jump_cooldown;
     float jump_cooldown_timer;
+    const GameConfig::BirdConfig& config;
 
     void init(const std::string& texture_file);
 };

@@ -1,0 +1,62 @@
+{
+  "window": {
+    "width": 800,
+    "height": 600,
+    "title": "Flappy Bird Clone"
+  },
+  "bird": {
+    "texture": "assets/default_bird.png",
+    "gravity": 1000.0,
+    "jump_strength": -425.0,
+    "jump_cooldown": 0.3,
+    "default_position": {"x": 100, "y": 300}
+  },
+  "background": {
+    "texture": "assets/background.png",
+    "scroll_speed": 100.0
+  },
+  "ground": {
+    "texture": "assets/ground.png",
+    "scroll_speed": 200.0,
+    "height": 100.0
+  },
+  "pipe": {
+    "texture": "assets/pipe-green.png",
+    "speed": 200.0,
+    "spawn_interval": 1.5,
+    "gap": 150,
+    "minPipeHeightMultiplier": 0.3,
+    "maxPipeHeightMultiplier": 0.7
+  },
+  "font": {
+    "file": "assets/arcade.ttf",
+    "size": 50,
+    "color": {"r": 255, "g": 255, "b": 255}
+  },
+  "startMessage": {
+    "text": "Press space to start!",
+    "size": 50,
+    "color": {"r": 255, "g": 255, "b": 255},
+    "position": {"x": 400, "y": 250}
+  },
+  "pauseMessage": {
+    "text": "Press space to resume!",
+    "size": 50,
+    "color": {"r": 255, "g": 255, "b": 255},
+    "position": {"x": 400, "y": 250}
+  },
+  "settingsMessage": {
+    "text": "Settings! Press space to go back",
+    "size": 50,
+    "color": {"r": 255, "g": 255, "b": 255},
+    "position": {"x": 400, "y": 150}
+  },
+  "scoreMessage": {
+    "text": "",
+    "size": 50,
+    "color": {"r": 255, "g": 255, "b": 255},
+    "position": {"x": 400, "y": 20}
+  },
+  "gameOverTexture": "assets/gameover-message.png"
+}
+

@@ -6,7 +6,9 @@
 
 #include "Ground.h"
 
-Ground::Ground(const std::string& texture_file, float speed) : speed(speed) {
+#include <iostream>
+
+Ground::Ground(const std::string& texture_file, float speed, float width, float height, float y) : speed(speed) {
     if (!ground_texture.loadFromFile(texture_file)) {
         // Handle error
     }
@@ -14,15 +16,11 @@ Ground::Ground(const std::string& texture_file, float speed) : speed(speed) {
     ground_sprite1.setTexture(ground_texture);
     ground_sprite2.setTexture(ground_texture);
 
-    // Resize the ground to fit
-    float window_width = 800.0f; // window width -> todo: get window width from window object
-    float ground_height = 100.0f; // Adjust for the ground height -> todo: get ground height from texture or smth
+    ground_sprite1.setTextureRect(sf::IntRect(0, 0, width, height));
+    ground_sprite2.setTextureRect(sf::IntRect(0, 0, width, height));
 
-    ground_sprite1.setTextureRect(sf::IntRect(0, 0, window_width, ground_height));
-    ground_sprite2.setTextureRect(sf::IntRect(0, 0, window_width, ground_height));
-
-    ground_sprite1.setPosition(0, 510); // Adjust the vertical position
-    ground_sprite2.setPosition(window_width, 510);
+    ground_sprite1.setPosition(0, y); // Adjust the vertical position
+    ground_sprite2.setPosition(width, y);
 }
 
 void Ground::update(float dt) {
