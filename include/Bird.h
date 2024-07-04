@@ -11,7 +11,7 @@
 
 class Bird {
 public:
-    explicit Bird(const GameConfig::BirdConfig& config);
+    explicit Bird(const GameConfig::BirdConfig& config, const GameConfig::KeyBinds& keyBinds);
     void update(float dt);
     void render(sf::RenderWindow& window);
     sf::FloatRect getBounds() const;
@@ -27,6 +27,7 @@ private:
     float jump_cooldown;
     float jump_cooldown_timer;
     const GameConfig::BirdConfig& config;
+    const GameConfig::KeyBinds& keyBinds;
 
     void init(const std::string& texture_file);
 };

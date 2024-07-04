@@ -57,6 +57,11 @@
     "color": {"r": 255, "g": 255, "b": 255},
     "position": {"x": 400, "y": 20}
   },
+  "keyBinds": {
+    "jump": 57,
+    "pause": 15,
+    "settings": 18
+  },
   "gameOverTexture": "assets/gameover-message.png"
 }
 

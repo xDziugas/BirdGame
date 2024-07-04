@@ -14,7 +14,7 @@ Game::Game(const GameConfig &config)
     : window(sf::VideoMode(config.window.width, config.window.height), config.window.title),
     config(config),
     gameState(State(StartScreen)),
-    bird(config.bird),
+    bird(config.bird, config.keyBinds),
     background(config.background.texture,config.background.scroll_speed, config.window),
     ground(config.ground.texture, config.ground.scroll_speed, config.window.width, config.ground.height, config.window.height - config.ground.height),
     pipeSpawnInterval(config.pipe.spawn_interval), score(0),
@@ -92,7 +92,7 @@ void Game::processEvents() {
         if (event.type == sf::Event::Closed) {
             window.close();
         }
-        inputHandler.handleInput(event, gameState, clock, pipeSpawnClock, isPaused, pauseTime, totalPauseTime, pipes, score, [this]() { resetGame(); });
+        inputHandler.handleInput(event, gameState, clock, pipeSpawnClock, isPaused, pauseTime, totalPauseTime, pipes, score, [this]() { resetGame(); }, config.keyBinds);
     }
 }
 

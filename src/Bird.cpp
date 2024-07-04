@@ -7,7 +7,7 @@
 #include <iostream>
 #include <string.h>
 
-Bird::Bird(const GameConfig::BirdConfig& config) : velocity(0), gravity(config.gravity), jump_strength(config.jump_strength), jump_cooldown(config.jump_cooldown), jump_cooldown_timer(0.0f), config(config) {
+Bird::Bird(const GameConfig::BirdConfig& config, const GameConfig::KeyBinds& keyBinds) : velocity(0), gravity(config.gravity), jump_strength(config.jump_strength), jump_cooldown(config.jump_cooldown), jump_cooldown_timer(0.0f), config(config), keyBinds(keyBinds) {
     init(config.texture);
 }
 
@@ -22,7 +22,7 @@ void Bird::init(const std::string& texture_file) {
 
 void Bird::update(float dt) {
     jump_cooldown_timer -= dt;
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && jump_cooldown_timer <= 0.0f) {
+    if (sf::Keyboard::isKeyPressed(static_cast<sf::Keyboard::Key>(keyBinds.jump)) && jump_cooldown_timer <= 0.0f) {
         velocity = jump_strength;
         jump_cooldown_timer = jump_cooldown;
     }

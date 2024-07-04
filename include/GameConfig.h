@@ -69,6 +69,12 @@ public:
         std::string gameOverTexture;
     } gameSettings;
 
+    struct KeyBinds {
+        int jump;
+        int pause;
+        int settings;
+    } keyBinds;
+
     bool loadFromFile(const std::string& filename);
 };
 

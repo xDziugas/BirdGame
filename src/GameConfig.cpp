@@ -99,6 +99,10 @@ bool GameConfig::loadFromFile(const std::string& filename) {
         j["settingsMessage"]["position"]["y"]
     );
 
+    keyBinds.jump = j["keyBinds"]["jump"];
+    keyBinds.pause = j["keyBinds"]["pause"];
+    keyBinds.settings = j["keyBinds"]["settings"];
+
     gameSettings.gameOverTexture = j["gameOverTexture"];
 
     return true;

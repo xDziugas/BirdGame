@@ -7,9 +7,9 @@
 
 void InputHandler::handleInput(sf::Event& event, State& gameState, sf::Clock& clock, sf::Clock& pipeSpawnClock, bool& isPaused,
                                sf::Time& pauseTime, sf::Time& totalPauseTime, std::vector<Pipe>& pipes, int& score,
-                               const std::function<void()>& resetGameCallback) {
+                               const std::function<void()>& resetGameCallback, const GameConfig::KeyBinds& keyBinds) {
     if (event.type == sf::Event::KeyPressed) {
-        if (event.key.code == sf::Keyboard::Space) {
+        if (event.key.code == static_cast<sf::Keyboard::Key>(keyBinds.jump)) {
             if (gameState.get() == StartScreen) {
                 gameState.set(Playing);
                 clock.restart();
@@ -25,7 +25,7 @@ void InputHandler::handleInput(sf::Event& event, State& gameState, sf::Clock& cl
             } else if (gameState.get() == Settings) {
                 gameState.set(StartScreen);
             }
-        } else if (event.key.code == sf::Keyboard::P) {
+        } else if (event.key.code == static_cast<sf::Keyboard::Key>(keyBinds.pause)) {
             if (gameState.get() == Playing) {
                 gameState.set(Pause);
                 pauseTime = clock.getElapsedTime();
@@ -34,7 +34,7 @@ void InputHandler::handleInput(sf::Event& event, State& gameState, sf::Clock& cl
                 totalPauseTime += clock.getElapsedTime() - pauseTime;
                 clock.restart();
             }
-        } else if (event.key.code == sf::Keyboard::S && gameState.get() != Playing && gameState.get() != Pause) {
+        } else if (event.key.code == static_cast<sf::Keyboard::Key>(keyBinds.settings) && gameState.get() != Playing && gameState.get() != Pause) {
             gameState.set(Settings);
         }
     }
