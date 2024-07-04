@@ -16,7 +16,7 @@ Game::Game(const GameConfig &config)
     gameState(State(StartScreen)),
     bird(config.bird, config.keyBinds),
     background(config.background.texture,config.background.scroll_speed, config.window),
-    ground(config.ground.texture, config.ground.scroll_speed, config.window.width, config.ground.height, config.window.height - config.ground.height),
+    ground(config.ground.texture, config.ground.scroll_speed, static_cast<float>(config.window.width), config.ground.height, static_cast<float>(config.window.height) - config.ground.height),
     pipeSpawnInterval(config.pipe.spawn_interval), score(0),
     isPaused(false),
     highScoreManager("highscores.txt") {

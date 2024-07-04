@@ -26,21 +26,33 @@ bool Pipe::loadTexture(const std::string& texture_file) {
 void Pipe::initSprites() {
     pipe_top.setTexture(pipe_texture);
     pipe_bottom.setTexture(pipe_texture);
-    pipe_bottom.setRotation(180); // Rotate bottom pipe
+    pipe_top.setRotation(180); // Rotate bottom pipe
 }
 
 void Pipe::spawnPipe(float x, float screenHeight, float groundHeight, float min, float max) {
     float min_height = min * screenHeight;
-    float max_height = max * screenHeight + gap - groundHeight;
+    float max_height = max * (screenHeight - groundHeight) - gap;
 
     // Generate a random height for the top pipe within the specified bounds
-    float top_pipe_end = min_height + rand() % static_cast<int>(max_height - min_height);
+    float top_pipe_end = min_height + static_cast<float>(rand() % static_cast<int>(max_height - min_height));
 
-    // Set the position of the top pipe
-    pipe_top.setPosition(x, top_pipe_end);
+    float top_pipe_height = top_pipe_end;
+    float bottom_pipe_height = screenHeight - (top_pipe_end + gap + groundHeight);
 
-    // Set the position of the bottom pipe
-    pipe_bottom.setPosition(x + pipe_bottom.getGlobalBounds().width, top_pipe_end - gap);
+    // Scale the pipes to fit the screen height
+    float scale_factor_top = top_pipe_height / static_cast<float>(pipe_texture.getSize().y);
+    float scale_factor_bottom = bottom_pipe_height / static_cast<float>(pipe_texture.getSize().y);
+
+    if(scale_factor_top > 1.0f) {
+        pipe_top.setScale(1.0f, scale_factor_top);
+    }
+
+    if(scale_factor_bottom > 1.0f) {
+        pipe_bottom.setScale(1.0f, scale_factor_bottom);
+    }
+
+    pipe_top.setPosition(x + pipe_bottom.getGlobalBounds().width, top_pipe_end);
+    pipe_bottom.setPosition(x, top_pipe_end + gap);
 }
 
 void Pipe::update(float dt) {

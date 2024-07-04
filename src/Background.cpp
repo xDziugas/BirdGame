@@ -15,13 +15,16 @@ Background::Background(const std::string& texture_file, float speed, const GameC
     background_sprite2.setTexture(background_texture);
 
     // Resize the background
-    int window_width = config.width;
-    int window_height = config.height;
+    background_sprite1.setScale(
+        static_cast<float>(config.width) / background_texture.getSize().x,
+        static_cast<float>(config.height) / background_texture.getSize().y
+    );
+    background_sprite2.setScale(
+        static_cast<float>(config.width) / background_texture.getSize().x,
+        static_cast<float>(config.height) / background_texture.getSize().y
+    );
 
-    background_sprite1.setTextureRect(sf::IntRect(0, 0, window_width, window_height));
-    background_sprite2.setTextureRect(sf::IntRect(0, 0, window_width, window_height));
-
-    background_sprite2.setPosition(window_width, 0);
+    background_sprite2.setPosition(config.width, 0);
 }
 
 void Background::update(float dt) {
