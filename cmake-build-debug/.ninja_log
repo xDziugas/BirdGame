@@ -17,3 +17,11 @@
 1635	2520	7418231598084620	BirdGame.exe	2d742f8b16f336e3
 9	1628	7418232301480757	CMakeFiles/BirdGame.dir/src/Pipe.cpp.obj	4000482a6a784754
 1629	2529	7418232317677449	BirdGame.exe	2d742f8b16f336e3
+19	2384	7418240258388117	CMakeFiles/BirdGame.dir/src/Background.cpp.obj	8cf533475ffc1010
+15	2410	7418240258338249	CMakeFiles/BirdGame.dir/src/Bird.cpp.obj	ed5cb4c7345d2709
+24	2447	7418240258438005	CMakeFiles/BirdGame.dir/src/Pipe.cpp.obj	4000482a6a784754
+9	2488	7418240258288601	CMakeFiles/BirdGame.dir/main.cpp.obj	2e0cc7814e013612
+35	2513	7418240258540373	CMakeFiles/BirdGame.dir/src/InputHandler.cpp.obj	b3c110bbbd99e58
+29	2654	7418240258487856	CMakeFiles/BirdGame.dir/src/Game.cpp.obj	fffe8e1d63250fb7
+40	3698	7418240258590229	CMakeFiles/BirdGame.dir/src/GameConfig.cpp.obj	68e08b38de37aa56
+3698	4578	7418240295173072	BirdGame.exe	2d742f8b16f336e3

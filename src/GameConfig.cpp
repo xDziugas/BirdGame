@@ -28,6 +28,8 @@ bool GameConfig::loadFromFile(const std::string& filename) {
         j["bird"]["default_position"]["x"],
         j["bird"]["default_position"]["y"]
     );
+    bird.width = j["bird"]["width"];
+    bird.height = j["bird"]["height"];
 
     background.texture = j["background"]["texture"];
     background.scroll_speed = j["background"]["scroll_speed"];

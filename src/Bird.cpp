@@ -17,6 +17,12 @@ void Bird::init(const std::string& texture_file) {
         exit(EXIT_FAILURE);
     }
     bird_sprite.setTexture(bird_texture);
+
+    bird_sprite.setScale(
+        config.width / static_cast<float>(bird_texture.getSize().x),
+        config.height / static_cast<float>(bird_texture.getSize().y)
+    );
+
     bird_sprite.setPosition(config.default_position);  // Initial position
 }
 

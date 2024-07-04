@@ -24,6 +24,8 @@ public:
         float gravity;
         float jump_strength;
         float jump_cooldown;
+        float width;
+        float height;
         sf::Vector2f default_position;
     } bird;
 

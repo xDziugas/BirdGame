@@ -9,7 +9,9 @@
     "gravity": 1000.0,
     "jump_strength": -425.0,
     "jump_cooldown": 0.3,
-    "default_position": {"x": 100, "y": 300}
+    "default_position": {"x": 100, "y": 300},
+    "width": 34.0,
+    "height": 24.0
   },
   "background": {
     "texture": "assets/background.png",
