@@ -222,7 +222,9 @@ void Game::render() {
         window.draw(scoreText);
     }
 
-    window.draw(fpsText);
+    if(config.frameRate.showFps) {
+        window.draw(fpsText);
+    }
 
     window.display();
 }

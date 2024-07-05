@@ -11,7 +11,8 @@
     "jump_cooldown": 0.3,
     "default_position": {"x": 100, "y": 300},
     "width": 34.0,
-    "height": 24.0
+    "height": 24.0,
+    "enableRotation": true
   },
   "background": {
     "texture": "assets/background.png",
@@ -68,7 +69,8 @@
     "fps": 144,
     "position": {"x": 700, "y": 20},
     "size": 20,
-    "color": {"r": 255, "g": 255, "b": 255}
+    "color": {"r": 255, "g": 255, "b": 255},
+    "showFps": true
   },
   "gameOverTexture": "assets/gameover-message.png"
 }

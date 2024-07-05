@@ -23,6 +23,7 @@ public:
         sf::Vector2f position;
         int size;
         sf::Color color;
+        bool showFps;
     } frameRate;
 
     struct BirdConfig {
@@ -33,6 +34,7 @@ public:
         float width;
         float height;
         sf::Vector2f default_position;
+        bool enableRotation;
     } bird;
 
     struct BackgroundConfig {

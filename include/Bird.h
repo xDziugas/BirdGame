@@ -30,6 +30,7 @@ private:
     const GameConfig::KeyBinds& keyBinds;
 
     void init(const std::string& texture_file);
+    void setRotation();
 };
 
 #endif //BIRD_H

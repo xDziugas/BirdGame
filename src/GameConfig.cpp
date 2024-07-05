@@ -31,6 +31,7 @@ bool GameConfig::loadFromFile(const std::string& filename) {
         j["frameRate"]["color"]["g"],
         j["frameRate"]["color"]["b"]
     );
+    frameRate.showFps = j["frameRate"]["showFps"];
 
     bird.texture = j["bird"]["texture"];
     bird.gravity = j["bird"]["gravity"];
@@ -42,6 +43,7 @@ bool GameConfig::loadFromFile(const std::string& filename) {
     );
     bird.width = j["bird"]["width"];
     bird.height = j["bird"]["height"];
+    bird.enableRotation = j["bird"]["enableRotation"];
 
     background.texture = j["background"]["texture"];
     background.scroll_speed = j["background"]["scroll_speed"];
