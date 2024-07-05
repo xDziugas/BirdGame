@@ -16,8 +16,14 @@ public:
         int width;
         int height;
         std::string title;
-        int framerate_limit;
     } window;
+
+    struct FrameRateConfig {
+        int fps;
+        sf::Vector2f position;
+        int size;
+        sf::Color color;
+    } frameRate;
 
     struct BirdConfig {
         std::string texture;

@@ -20,6 +20,18 @@ bool GameConfig::loadFromFile(const std::string& filename) {
     window.height = j["window"]["height"];
     window.title = j["window"]["title"];
 
+    frameRate.fps = j["frameRate"]["fps"];
+    frameRate.position = sf::Vector2f(
+        j["frameRate"]["position"]["x"],
+        j["frameRate"]["position"]["y"]
+    );
+    frameRate.size = j["frameRate"]["size"];
+    frameRate.color = sf::Color(
+        j["frameRate"]["color"]["r"],
+        j["frameRate"]["color"]["g"],
+        j["frameRate"]["color"]["b"]
+    );
+
     bird.texture = j["bird"]["texture"];
     bird.gravity = j["bird"]["gravity"];
     bird.jump_strength = j["bird"]["jump_strength"];

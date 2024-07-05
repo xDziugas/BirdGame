@@ -21,7 +21,7 @@ Game::Game(const GameConfig &config)
     isPaused(false),
     highScoreManager("highscores.txt") {
 
-    window.setFramerateLimit(config.window.framerate_limit); // Cap the frame rate to 60 FPS
+    window.setFramerateLimit(config.frameRate.fps); // Cap the frame rate to 60 FPS
 
     srand(static_cast<unsigned int>(time(nullptr))); // Seed the random number generator
 
@@ -36,6 +36,11 @@ Game::Game(const GameConfig &config)
         std::cerr << "Failed to load font" << std::endl;
         exit(EXIT_FAILURE);
     }
+
+    fpsText.setFont(font);
+    fpsText.setCharacterSize(config.frameRate.size);
+    fpsText.setFillColor(config.frameRate.color);
+    fpsText.setPosition(config.frameRate.position);
 
     scoreText.setFont(font);
     scoreText.setCharacterSize(config.gameSettings.scoreMessage.size);
@@ -77,11 +82,23 @@ Game::Game(const GameConfig &config)
 }
 
 void Game::run() {
+    sf::Clock fpsClock;
+    int frameCount = 0;
+
     while (window.isOpen()) {
         processEvents();
         if (gameState.get() == Playing && !isPaused) {
             update(clock.restart());
         }
+
+        // Update FPS every second
+        frameCount++;
+        if (fpsClock.getElapsedTime().asSeconds() >= 1.0f) {
+            fpsText.setString("FPS " + std::to_string(frameCount));
+            frameCount = 0;
+            fpsClock.restart();
+        }
+
         render();
     }
 }
@@ -204,6 +221,8 @@ void Game::render() {
                              config.gameSettings.scoreMessage.position.y);
         window.draw(scoreText);
     }
+
+    window.draw(fpsText);
 
     window.display();
 }

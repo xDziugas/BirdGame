@@ -50,6 +50,7 @@ private:
     sf::Text startMessageText;
     sf::Text pauseMessageText;
     sf::Text settingsMessageText;
+    sf::Text fpsText;
     sf::Texture gameOverTexture;
     sf::Sprite gameOverSprite;
     InputHandler inputHandler;
