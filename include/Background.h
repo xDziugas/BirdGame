@@ -16,6 +16,14 @@ public:
     void render(sf::RenderWindow& window);
 
 private:
+    void loadTexture(const std::string& texture_file);
+    void setTextureRepeat(bool repeat);
+    void initializeSprites();
+    void scaleSprites(int width, int height);
+    void setSpritePositions(int width);
+    void moveSprites(float dt);
+    void resetSpritePositions();
+
     sf::Texture background_texture;
     sf::Sprite background_sprite1;
     sf::Sprite background_sprite2;

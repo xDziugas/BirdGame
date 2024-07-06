@@ -72,6 +72,10 @@
     "color": {"r": 255, "g": 255, "b": 255},
     "showFps": true
   },
+  "highScore": {
+    "size": 30,
+    "color": {"r": 255, "g": 255, "b": 255}
+  },
   "gameOverTexture": "assets/gameover-message.png"
 }
 

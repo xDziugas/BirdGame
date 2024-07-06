@@ -85,6 +85,11 @@ public:
         int settings;
     } keyBinds;
 
+    struct HighScoreConfig {
+        sf::Color color;
+        int size;
+    } highScore;
+
     bool loadFromFile(const std::string& filename);
 };
 

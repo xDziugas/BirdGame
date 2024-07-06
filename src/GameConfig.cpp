@@ -121,5 +121,12 @@ bool GameConfig::loadFromFile(const std::string& filename) {
 
     gameSettings.gameOverTexture = j["gameOverTexture"];
 
+    highScore.color = sf::Color(
+        j["highScore"]["color"]["r"],
+        j["highScore"]["color"]["g"],
+        j["highScore"]["color"]["b"]
+    );
+    highScore.size = j["highScore"]["size"];
+
     return true;
 }

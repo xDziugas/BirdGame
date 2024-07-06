@@ -18,19 +18,36 @@
 
 class Game {
 public:
-    Game(const GameConfig& config);
+    explicit Game(const GameConfig& config);
     void run();
 
 private:
+    void initializeWindow();
+    void initializeAssets();
+    void initializeText(sf::Text& text, const std::string& message, const sf::Vector2f& position, const sf::Color& color, int size) const;
+    void updateFPS(sf::Clock& fpsClock, int& frameCount);
     GameConfig config;
-
+    void handleEvent(sf::Event& event);
     void processEvents();
     void update(sf::Time dt);
     void render();
-
+    void handlePipeSpawning();
+    void updatePipes(float dt);
+    void incrementScore();
+    void removeOffScreenPipes();
     void resetGame();
     void spawnPipe();
     void checkCollisions();
+    void renderCommonElements();
+    void renderStartScreen();
+    void renderPauseScreen();
+    void renderSettingsScreen();
+    void renderGameOverScreen();
+    void renderPlayingScreen();
+    void renderHighScores();
+    void updateHighScores();
+    bool checkBirdPipeCollisions() const;
+    bool checkBirdGroundCollision() const;
 
     sf::RenderWindow window;
     State gameState;

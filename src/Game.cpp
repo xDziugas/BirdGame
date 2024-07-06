@@ -11,74 +11,27 @@
 #include "State.h"
 
 Game::Game(const GameConfig &config)
-    : window(sf::VideoMode(config.window.width, config.window.height), config.window.title),
-    config(config),
-    gameState(State(StartScreen)),
-    bird(config.bird, config.keyBinds),
-    background(config.background.texture,config.background.scroll_speed, config.window),
-    ground(config.ground.texture, config.ground.scroll_speed, static_cast<float>(config.window.width), config.ground.height, static_cast<float>(config.window.height) - config.ground.height),
-    pipeSpawnInterval(config.pipe.spawn_interval), score(0),
-    isPaused(false),
-    highScoreManager("highscores.txt") {
+    : window(),
+      config(config),
+      gameState(State(StartScreen)),
+      bird(config.bird, config.keyBinds),
+      background(config.background.texture, config.background.scroll_speed, config.window),
+      ground(config.ground.texture, config.ground.scroll_speed, static_cast<float>(config.window.width), config.ground.height, static_cast<float>(config.window.height) - config.ground.height),
+      pipeSpawnInterval(config.pipe.spawn_interval),
+      score(0),
+      isPaused(false),
+      highScoreManager("highscores.txt") {
 
-    window.setFramerateLimit(config.frameRate.fps); // Cap the frame rate to 60 FPS
+    initializeWindow();
+    initializeAssets();
 
-    srand(static_cast<unsigned int>(time(nullptr))); // Seed the random number generator
+    initializeText(fpsText, "", config.frameRate.position, config.frameRate.color, config.frameRate.size);
+    initializeText(scoreText, "", config.gameSettings.scoreMessage.position, config.gameSettings.scoreMessage.color, config.gameSettings.scoreMessage.size);
+    initializeText(startMessageText, config.gameSettings.startMessage.text, { static_cast<float>(window.getSize().x) / 2.0f, static_cast<float>(window.getSize().y) / 2.0f - 50.0f }, config.gameSettings.startMessage.color, config.gameSettings.startMessage.size);
+    initializeText(pauseMessageText, config.gameSettings.pauseMessage.text, { static_cast<float>(window.getSize().x) / 2.0f, static_cast<float>(window.getSize().y) / 2.0f - 50.0f }, config.gameSettings.pauseMessage.color, config.gameSettings.pauseMessage.size);
+    initializeText(settingsMessageText, config.gameSettings.settingsMessage.text, { static_cast<float>(window.getSize().x) / 2.0f, static_cast<float>(window.getSize().y) / 2.0f - 150.0f }, config.gameSettings.settingsMessage.color, config.gameSettings.settingsMessage.size);
 
-    if (!Pipe::loadTexture(config.pipe.texture)) {
-        exit(EXIT_FAILURE);
-    }
-
-    gameOverTexture.loadFromFile(config.gameSettings.gameOverTexture);
-    gameOverSprite.setTexture(gameOverTexture);
-
-    if (!font.loadFromFile(config.gameSettings.font.file)) {
-        std::cerr << "Failed to load font" << std::endl;
-        exit(EXIT_FAILURE);
-    }
-
-    fpsText.setFont(font);
-    fpsText.setCharacterSize(config.frameRate.size);
-    fpsText.setFillColor(config.frameRate.color);
-    fpsText.setPosition(config.frameRate.position);
-
-    scoreText.setFont(font);
-    scoreText.setCharacterSize(config.gameSettings.scoreMessage.size);
-    scoreText.setFillColor(config.gameSettings.scoreMessage.color);
-    scoreText.setPosition(config.gameSettings.scoreMessage.position);
-
-    startMessageText.setFont(font);
-    startMessageText.setCharacterSize(config.gameSettings.startMessage.size);
-    startMessageText.setFillColor(config.gameSettings.startMessage.color);
-    startMessageText.setString(config.gameSettings.startMessage.text);
-
-    sf::FloatRect textRect = startMessageText.getLocalBounds();
-    startMessageText.setOrigin(textRect.left + textRect.width / 2.0f,
-                               textRect.top + textRect.height / 2.0f);
-    startMessageText.setPosition(window.getSize().x / 2.0f, window.getSize().y / 2.0f - 50.0f);
-
-    pauseMessageText.setFont(font);
-    pauseMessageText.setCharacterSize(config.gameSettings.pauseMessage.size);
-    pauseMessageText.setFillColor(config.gameSettings.pauseMessage.color);
-    pauseMessageText.setString(config.gameSettings.pauseMessage.text);
-
-    sf::FloatRect pauseTextRect = pauseMessageText.getLocalBounds();
-    pauseMessageText.setOrigin(pauseTextRect.left + pauseTextRect.width / 2.0f,
-                               pauseTextRect.top + pauseTextRect.height / 2.0f);
-    pauseMessageText.setPosition(window.getSize().x / 2.0f, window.getSize().y / 2.0f - 50.0f);
-
-    settingsMessageText.setFont(font);
-    settingsMessageText.setCharacterSize(config.gameSettings.settingsMessage.size);
-    settingsMessageText.setFillColor(config.gameSettings.settingsMessage.color);
-    settingsMessageText.setString(config.gameSettings.settingsMessage.text);
-
-    sf::FloatRect settingsTextRect = settingsMessageText.getLocalBounds();
-    settingsMessageText.setOrigin(settingsTextRect.left + settingsTextRect.width / 2.0f,
-                                  settingsTextRect.top + settingsTextRect.height / 2.0f);
-    settingsMessageText.setPosition(window.getSize().x / 2.0f, window.getSize().y / 2.0f - 150.0f);
-
-    highScoreManager.loadHighScores(); // Load high scores when the game starts
-
+    highScoreManager.loadHighScores();
 }
 
 void Game::run() {
@@ -87,173 +40,246 @@ void Game::run() {
 
     while (window.isOpen()) {
         processEvents();
+
         if (gameState.get() == Playing && !isPaused) {
             update(clock.restart());
         }
 
-        // Update FPS every second
-        frameCount++;
-        if (fpsClock.getElapsedTime().asSeconds() >= 1.0f) {
-            fpsText.setString("FPS " + std::to_string(frameCount));
-            frameCount = 0;
-            fpsClock.restart();
-        }
+        updateFPS(fpsClock, frameCount);
 
         render();
     }
 }
 
 void Game::processEvents() {
-    sf::Event event;
+    sf::Event event{};
     while (window.pollEvent(event)) {
-        if (event.type == sf::Event::Closed) {
-            window.close();
-        }
-        inputHandler.handleInput(event, gameState, clock, pipeSpawnClock, isPaused, pauseTime, totalPauseTime, pipes, score, [this]() { resetGame(); }, config.keyBinds);
+        handleEvent(event);
     }
 }
 
+void Game::handleEvent(sf::Event& event) {
+    if (event.type == sf::Event::Closed) {
+        window.close();
+    }
+    inputHandler.handleInput(event, gameState, clock, pipeSpawnClock, isPaused, pauseTime, totalPauseTime, pipes, score, [this]() { resetGame(); }, config.keyBinds);
+}
 
-void Game::update(sf::Time dt) {
+void Game::update(const sf::Time dt) {
     bird.update(dt.asSeconds());
     background.update(dt.asSeconds());
     ground.update(dt.asSeconds());
 
-    // Spawn new pipes at intervals
+    handlePipeSpawning();
+    updatePipes(dt.asSeconds());
+    incrementScore();
+    removeOffScreenPipes();
+
+    checkCollisions();
+}
+
+void Game::handlePipeSpawning() {
     if ((pipeSpawnClock.getElapsedTime() - totalPauseTime).asSeconds() >= pipeSpawnInterval) {
         spawnPipe();
         totalPauseTime = sf::Time::Zero;  // Reset total pause time after spawning a pipe
     }
+}
 
-    // Update pipes
+void Game::updatePipes(const float dt) {
     for (auto &pipe : pipes) {
-        pipe.update(dt.asSeconds());
+        pipe.update(dt);
     }
+}
 
-    // Increment score when bird passes a pipe
+void Game::incrementScore() {
     for (auto &pipe : pipes) {
         if (!pipe.isPassed() && pipe.getPosition().x < bird.getPosition().x) {
             pipe.markAsPassed();
             score++;
         }
     }
+}
 
-    // Remove pipes that are off screen
+void Game::removeOffScreenPipes() {
     pipes.erase(std::remove_if(pipes.begin(), pipes.end(), [](const Pipe &pipe) {
         return pipe.isOffScreen();
     }), pipes.end());
-
-    checkCollisions();
 }
 
 void Game::render() {
     window.clear();
 
-    if (gameState.get() == StartScreen) {
-        // Draw game elements without updating
-        background.render(window);
-        for (auto &pipe : pipes) {
-            pipe.render(window);
-        }
-        ground.render(window);
-        bird.render(window);
+    renderCommonElements();
 
-        // Draw start message
-        window.draw(startMessageText);
-    } else if (gameState.get() == Pause) {
-        // Draw game elements without updating
-        background.render(window);
-        for (auto &pipe : pipes) {
-            pipe.render(window);
-        }
-        ground.render(window);
-        bird.render(window);
-
-        // Draw pause message
-        window.draw(pauseMessageText);
-    } else if (gameState.get() == Settings) {
-        // Draw settings message
-        window.draw(settingsMessageText);
-    } else if (gameState.get() == GameOver) {
-        window.draw(gameOverSprite);
-
-        std::stringstream ss;
-        ss << "Score! " << score;
-        scoreText.setString(ss.str());
-        scoreText.setPosition(
-            config.gameSettings.scoreMessage.position.x - scoreText.getLocalBounds().width / 2.0f,
-            config.gameSettings.scoreMessage.position.y
-        );
-
-        window.draw(scoreText);
-
-        // Display high scores
-        float yOffset = 100;
-        for (size_t i = 0; i < highScoreManager.getHighScores().size(); ++i) {
-            sf::Text highScoreText;
-            highScoreText.setFont(font);
-            highScoreText.setCharacterSize(30);
-            highScoreText.setFillColor(sf::Color::White);
-            highScoreText.setPosition(window.getSize().x / 2 -100, yOffset + i * 40);
-
-            // Format the high score with four digits
-            std::stringstream hs_ss;
-            hs_ss << std::setw(5) << std::setfill('0') << highScoreManager.getHighScores()[i];
-            highScoreText.setString(std::to_string(i + 1) + "! " + hs_ss.str());
-
-            window.draw(highScoreText);
-        }
-    } else {
-        background.render(window); // Render the background
-
-        // Render pipes
-        for (auto &pipe : pipes) {
-            pipe.render(window);
-        }
-
-        ground.render(window); // Render the ground
-        bird.render(window);   // Render the bird
-
-        std::stringstream ss;
-        ss << score;
-        scoreText.setString(ss.str());
-        scoreText.setPosition(config.gameSettings.scoreMessage.position.x,
-                             config.gameSettings.scoreMessage.position.y);
-        window.draw(scoreText);
+    switch (gameState.get()) {
+        case StartScreen:
+            renderStartScreen();
+            break;
+        case Pause:
+            renderPauseScreen();
+            break;
+        case Settings:
+            renderSettingsScreen();
+            break;
+        case GameOver:
+            renderGameOverScreen();
+            break;
+        case Playing:
+            renderPlayingScreen();
+            break;
     }
 
-    if(config.frameRate.showFps) {
+    if (config.frameRate.showFps) {
         window.draw(fpsText);
     }
 
     window.display();
 }
 
+void Game::renderCommonElements() {
+    background.render(window);
+    for (auto &pipe : pipes) {
+        pipe.render(window);
+    }
+    ground.render(window);
+    bird.render(window);
+}
+
+void Game::renderStartScreen() {
+    renderCommonElements();
+    window.draw(startMessageText);
+}
+
+void Game::renderPauseScreen() {
+    renderCommonElements();
+    window.draw(pauseMessageText);
+}
+
+void Game::renderSettingsScreen() {
+    window.draw(settingsMessageText);
+}
+
+void Game::renderGameOverScreen() {
+    window.draw(gameOverSprite);
+
+    std::stringstream ss;
+    ss << "Score! " << score;
+    scoreText.setString(ss.str());
+    scoreText.setPosition(
+        config.gameSettings.scoreMessage.position.x - scoreText.getLocalBounds().width / 2.0f,
+        config.gameSettings.scoreMessage.position.y
+    );
+
+    window.draw(scoreText);
+
+    renderHighScores();
+}
+
+void Game::renderPlayingScreen() {
+    renderCommonElements();
+
+    std::stringstream ss;
+    ss << score;
+    scoreText.setString(ss.str());
+    scoreText.setPosition(config.gameSettings.scoreMessage.position.x,
+                          config.gameSettings.scoreMessage.position.y);
+    window.draw(scoreText);
+}
+
+void Game::renderHighScores() {
+    float yOffset = 100;
+    for (int i = 0; i < highScoreManager.getHighScores().size(); ++i) {
+        sf::Text highScoreText;
+        highScoreText.setFont(font);
+        highScoreText.setCharacterSize(config.highScore.size);
+        highScoreText.setFillColor(config.highScore.color);
+        highScoreText.setPosition(static_cast<float>(window.getSize().x) / 2 - 100, yOffset + static_cast<float>(i * 40));
+
+        std::stringstream hs_ss;
+        hs_ss << std::setw(5) << std::setfill('0') << highScoreManager.getHighScores()[i];
+        highScoreText.setString(std::to_string(i + 1) + "! " + hs_ss.str());
+
+        window.draw(highScoreText);
+    }
+}
+
 void Game::resetGame() {
     bird.reset();
-    highScoreManager.updateHighScores(score);
+    updateHighScores();
     gameState.set(StartScreen);
 }
 
+void Game::updateHighScores() {
+    highScoreManager.updateHighScores(score);
+}
+
 void Game::spawnPipe() {
-    pipes.emplace_back(config.pipe);
-    pipes.back().spawnPipe(window.getSize().x, window.getSize().y, ground.getGroundHeight(), config.pipe.minPipeHeightMultiplier, config.pipe.maxPipeHeightMultiplier);
+    Pipe newPipe(config.pipe);
+    newPipe.spawnPipe(static_cast<float>(window.getSize().x), static_cast<float>(window.getSize().y), ground.getGroundHeight(), config.pipe.minPipeHeightMultiplier, config.pipe.maxPipeHeightMultiplier);
+    pipes.emplace_back(std::move(newPipe));
     pipeSpawnClock.restart();
 }
 
 void Game::checkCollisions() {
-    sf::FloatRect birdBounds = bird.getBounds();
-    for (const auto &pipe : pipes) {
-        for (const auto &bounds : pipe.getBounds()) {
-            if (birdBounds.intersects(bounds)) {
-                gameState.set(GameOver);
-            }
-        }
-    }
-
-    // Check for collision with the ground
-    if (birdBounds.top + birdBounds.height >= window.getSize().y - ground.getGroundHeight()) {
+    if (checkBirdPipeCollisions() || checkBirdGroundCollision()) {
         gameState.set(GameOver);
     }
 }
 
+bool Game::checkBirdPipeCollisions() const {
+    sf::FloatRect birdBounds = bird.getBounds();
+    for (const auto &pipe : pipes) {
+        for (const auto &bounds : pipe.getBounds()) {
+            if (birdBounds.intersects(bounds)) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+bool Game::checkBirdGroundCollision() const {
+    sf::FloatRect birdBounds = bird.getBounds();
+    return birdBounds.top + birdBounds.height >= static_cast<float>(window.getSize().y) - ground.getGroundHeight();
+}
+
+void Game::initializeWindow() {
+    window.create(sf::VideoMode(config.window.width, config.window.height), config.window.title);
+    window.setFramerateLimit(config.frameRate.fps);
+    srand(static_cast<unsigned int>(time(nullptr)));
+}
+
+void Game::initializeAssets() {
+    if (!Pipe::loadTexture(config.pipe.texture)) {
+        throw std::runtime_error("Failed to load pipe texture");
+    }
+
+    if (!gameOverTexture.loadFromFile(config.gameSettings.gameOverTexture)) {
+        throw std::runtime_error("Failed to load game over texture");
+    }
+    gameOverSprite.setTexture(gameOverTexture);
+
+    if (!font.loadFromFile(config.gameSettings.font.file)) {
+        throw std::runtime_error("Failed to load font");
+    }
+}
+
+void Game::initializeText(sf::Text& text, const std::string& message, const sf::Vector2f& position, const sf::Color& color, int size) const {
+    text.setFont(font);
+    text.setCharacterSize(size);
+    text.setFillColor(color);
+    text.setString(message);
+
+    sf::FloatRect textRect = text.getLocalBounds();
+    text.setOrigin(textRect.left + textRect.width / 2.0f, textRect.top + textRect.height / 2.0f);
+    text.setPosition(position);
+}
+
+void Game::updateFPS(sf::Clock& fpsClock, int& frameCount) {
+    frameCount++;
+    if (fpsClock.getElapsedTime().asSeconds() >= 1.0f) {
+        fpsText.setString("FPS " + std::to_string(frameCount));
+        frameCount = 0;
+        fpsClock.restart();
+    }
+}
