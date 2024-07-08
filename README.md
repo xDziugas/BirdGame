@@ -9,6 +9,8 @@ Welcome to the Flappy Bird Clone game! This project is a personal implementation
 - [Usage](#usage)
 - [Configuration](#configuration)
 - [Controls](#controls)
+- [Packaging](#packaging)
+
 
 ## Features
 
@@ -25,12 +27,15 @@ Welcome to the Flappy Bird Clone game! This project is a personal implementation
 - C++17
 - SFML 2.6.1
 - [nlohmann/json](https://github.com/nlohmann/json) library for JSON parsing
+- CMake 3.28 or later
 
 ## Installation
 
+### From Source
+
 1. Clone the repository:
     ```sh
-    git clone https://github.com/xDziugas/BirdGamee.git
+    git clone https://github.com/xDziugas/BirdGame.git
     cd BirdGame
     ```
 
@@ -40,10 +45,33 @@ Welcome to the Flappy Bird Clone game! This project is a personal implementation
 
 3. Open the project in your preferred IDE (e.g., CLion).
 
+4. Build the project using your IDE or command line:
+    ```sh
+    mkdir build
+    cd build
+    cmake -DCMAKE_BUILD_TYPE=Release ..
+    cmake --build .
+    ```
+
+### From Pre-built Package
+
+1. Download the latest release from the [Releases page](https://github.com/xDziugas/BirdGame/releases).
+2. Extract the contents of the ZIP file to your desired location.
+3. Run the executable (`BirdGame.exe`) found in the extracted folder.
+
 ## Usage
 
-1. Build the project using your IDE or command line.
-2. Run the executable.
+### From Source
+
+1. Build the project using your IDE or command line (as described above).
+2. Run the executable:
+    ```sh
+    ./BirdGame
+    ```
+
+### From Pre-built Package
+
+1. Run the executable (`BirdGame.exe`) found in the extracted folder from the release.
 
 ## Configuration
 
@@ -63,3 +91,21 @@ The game settings can be configured via the `config.json` file. The following ar
 - **Space**: Jump / Start Game / Resume Game
 - **P**: Pause / Unpause
 - **S**: Open Settings
+
+## Packaging
+
+To create an installer or ZIP package with all the necessary files, use CPack:
+
+1. Build the project:
+    ```sh
+    cd build
+    cmake --build .
+    ```
+
+2. Run CPack:
+    ```sh
+    cpack
+    ```
+
+The generated installer or ZIP package will include the executable, configuration files, assets, and all necessary DLLs.
+
