@@ -31,3 +31,37 @@ add_executable(BirdGame main.cpp
         include/GameConfig.h
         include/json.hpp)
 target_link_libraries(BirdGame sfml-audio sfml-graphics sfml-system sfml-window)
+
+# Install target and necessary files
+install(TARGETS BirdGame DESTINATION bin)
+install(FILES config.json highscores.txt DESTINATION bin)
+install(DIRECTORY assets DESTINATION bin)
+
+# CPack configuration
+include(InstallRequiredSystemLibraries)
+set(CPACK_PACKAGE_NAME "BirdGame")
+set(CPACK_PACKAGE_VERSION "1.0")
+set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Flappy Bird Clone Game")
+
+# Find the MinGW libraries
+if(WIN32)
+    find_file(LIBGCC_S_SEH_1_DLL libgcc_s_seh-1.dll PATHS "C:/MinGW/bin")
+    find_file(LIBSTDCXX_6_DLL libstdc++-6.dll PATHS "C:/MinGW/bin")
+    find_file(LIBWINPTHREAD_1_DLL libwinpthread-1.dll PATHS "C:/MinGW/bin")
+
+    # Install MinGW runtime libraries
+    if(LIBGCC_S_SEH_1_DLL)
+        install(FILES ${LIBGCC_S_SEH_1_DLL} DESTINATION bin)
+    endif()
+    if(LIBSTDCXX_6_DLL)
+        install(FILES ${LIBSTDCXX_6_DLL} DESTINATION bin)
+    endif()
+    if(LIBWINPTHREAD_1_DLL)
+        install(FILES ${LIBWINPTHREAD_1_DLL} DESTINATION bin)
+    endif()
+endif()
+
+# Set CPack generator to ZIP
+set(CPACK_GENERATOR "ZIP")
+
+include(CPack)
