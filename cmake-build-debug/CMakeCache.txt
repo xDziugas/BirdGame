@@ -291,7 +291,22 @@ LIBSTDCXX_6_DLL:FILEPATH=C:/Program Files/JetBrains/CLion 2024.1.4/bin/mingw/bin
 LIBWINPTHREAD_1_DLL:FILEPATH=C:/Program Files/JetBrains/CLion 2024.1.4/bin/mingw/bin/libwinpthread-1.dll
 
 //Path to a file.
+SFML_AUDIO_DLL:FILEPATH=C:/SFML/SFML-2.6.1/bin/sfml-audio-2.dll
+
+//Path to a file.
 SFML_DOC_DIR:PATH=SFML_DOC_DIR-NOTFOUND
+
+//Path to a file.
+SFML_GRAPHICS_DLL:FILEPATH=C:/SFML/SFML-2.6.1/bin/sfml-graphics-2.dll
+
+//Path to a file.
+SFML_NETWORK_DLL:FILEPATH=C:/SFML/SFML-2.6.1/bin/sfml-network-2.dll
+
+//Path to a file.
+SFML_SYSTEM_DLL:FILEPATH=C:/SFML/SFML-2.6.1/bin/sfml-system-2.dll
+
+//Path to a file.
+SFML_WINDOW_DLL:FILEPATH=C:/SFML/SFML-2.6.1/bin/sfml-window-2.dll
 
 
 ########################

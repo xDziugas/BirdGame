@@ -48,6 +48,7 @@ private:
     void updateHighScores();
     bool checkBirdPipeCollisions() const;
     bool checkBirdGroundCollision() const;
+    bool checkBirdSkyCollision() const;
 
     sf::RenderWindow window;
     State gameState;

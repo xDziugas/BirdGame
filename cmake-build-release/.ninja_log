@@ -1,0 +1,16 @@
+# ninja log v6
+43	151	7421665261952225	CMakeFiles/BirdGame.dir/src/State.cpp.obj	bd4f97387c667a73
+26	1008	7421665261786377	CMakeFiles/BirdGame.dir/src/Ground.cpp.obj	6c881c0e06eb1b4a
+55	1264	7421665262075751	CMakeFiles/BirdGame.dir/src/HighScoreManager.cpp.obj	541cc7f7e252e8c2
+22	2328	7421665261746063	CMakeFiles/BirdGame.dir/src/Background.cpp.obj	816ff6a86376797a
+17	2361	7421665261701319	CMakeFiles/BirdGame.dir/src/Bird.cpp.obj	3ceeefdc07897aab
+49	2409	7421665262012872	CMakeFiles/BirdGame.dir/src/InputHandler.cpp.obj	29090dd3f9f3b49b
+31	2419	7421665261840348	CMakeFiles/BirdGame.dir/src/Pipe.cpp.obj	b4a9d84716bc4f37
+8	2460	7421665261615923	CMakeFiles/BirdGame.dir/main.cpp.obj	b9774e8d994991e6
+37	3055	7421665261898934	CMakeFiles/BirdGame.dir/src/Game.cpp.obj	eb0ee0ec6621528b
+60	4699	7421665262135620	CMakeFiles/BirdGame.dir/src/GameConfig.cpp.obj	94e3692a799f4992
+4699	4846	7421665308520194	BirdGame.exe	a2251974ccecdc49
+50	2010	7425182329993073	CMakeFiles/BirdGame.dir/src/InputHandler.cpp.obj	29090dd3f9f3b49b
+22	2163	7425182329703866	CMakeFiles/BirdGame.dir/main.cpp.obj	b9774e8d994991e6
+43	2732	7425182329923286	CMakeFiles/BirdGame.dir/src/Game.cpp.obj	eb0ee0ec6621528b
+2732	2982	7425182356807419	BirdGame.exe	a2251974ccecdc49
