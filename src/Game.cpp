@@ -221,7 +221,7 @@ void Game::spawnPipe() {
 }
 
 void Game::checkCollisions() {
-    if (checkBirdPipeCollisions() || checkBirdGroundCollision()) {
+    if (checkBirdPipeCollisions() || checkBirdGroundCollision() || checkBirdSkyCollision()) {
         gameState.set(GameOver);
     }
 }
@@ -241,6 +241,11 @@ bool Game::checkBirdPipeCollisions() const {
 bool Game::checkBirdGroundCollision() const {
     sf::FloatRect birdBounds = bird.getBounds();
     return birdBounds.top + birdBounds.height >= static_cast<float>(window.getSize().y) - ground.getGroundHeight();
+}
+
+bool Game::checkBirdSkyCollision() const {
+    sf::FloatRect birdBounds = bird.getBounds();
+    return birdBounds.top <= 0;
 }
 
 void Game::initializeWindow() {

@@ -49,6 +49,13 @@ if(WIN32)
     find_file(LIBSTDCXX_6_DLL libstdc++-6.dll PATHS "C:/MinGW/bin")
     find_file(LIBWINPTHREAD_1_DLL libwinpthread-1.dll PATHS "C:/MinGW/bin")
 
+    # Find the SFML libraries
+    find_file(SFML_SYSTEM_DLL sfml-system-2.dll PATHS "C:/SFML/SFML-2.6.1/bin")
+    find_file(SFML_WINDOW_DLL sfml-window-2.dll PATHS "C:/SFML/SFML-2.6.1/bin")
+    find_file(SFML_GRAPHICS_DLL sfml-graphics-2.dll PATHS "C:/SFML/SFML-2.6.1/bin")
+    find_file(SFML_AUDIO_DLL sfml-audio-2.dll PATHS "C:/SFML/SFML-2.6.1/bin")
+    find_file(SFML_NETWORK_DLL sfml-network-2.dll PATHS "C:/SFML/SFML-2.6.1/bin")
+
     # Install MinGW runtime libraries
     if(LIBGCC_S_SEH_1_DLL)
         install(FILES ${LIBGCC_S_SEH_1_DLL} DESTINATION bin)
@@ -58,6 +65,23 @@ if(WIN32)
     endif()
     if(LIBWINPTHREAD_1_DLL)
         install(FILES ${LIBWINPTHREAD_1_DLL} DESTINATION bin)
+    endif()
+
+    # Install SFML libraries
+    if(SFML_SYSTEM_DLL)
+        install(FILES ${SFML_SYSTEM_DLL} DESTINATION bin)
+    endif()
+    if(SFML_WINDOW_DLL)
+        install(FILES ${SFML_WINDOW_DLL} DESTINATION bin)
+    endif()
+    if(SFML_GRAPHICS_DLL)
+        install(FILES ${SFML_GRAPHICS_DLL} DESTINATION bin)
+    endif()
+    if(SFML_AUDIO_DLL)
+        install(FILES ${SFML_AUDIO_DLL} DESTINATION bin)
+    endif()
+    if(SFML_NETWORK_DLL)
+        install(FILES ${SFML_NETWORK_DLL} DESTINATION bin)
     endif()
 endif()
 
